@@ -1,12 +1,14 @@
 import asyncio
 import os
+
 from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.router import Router
+from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram.filters import CommandStart
-from utils import database_manager, keyboard_buttons, user_class
+
 import utils.fsm as fsm
+from utils import database_manager, keyboard_buttons, user_class
 
 BOT_API_TOKEN = os.getenv("bot_token")
 
