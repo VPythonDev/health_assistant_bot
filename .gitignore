@@ -1,0 +1,48 @@
+# 🐍 Игнорируем файлы Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.dll
+
+# 📂 Виртуальное окружение
+venv/
+env/
+.virtualenv/
+*.egg-info/
+*.egg
+
+# 📦 Кэш pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# 🔧 Конфигурации и зависимости
+*.log
+*.tmp
+*.swp
+.DS_Store
+.idea/
+*.iml
+
+# ⚡ PyCharm
+.vscode/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+
+# 🚀 Jupyter Notebook
+.ipynb_checkpoints/
+
+# 🔍 Лог-файлы и отладочная информация
+logs/
+debug.log
+nohup.out
+
+# 🛑 Файлы тестов и покрытие
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+pytest_cache/
