@@ -29,7 +29,7 @@ async def edit_full_name_handler(message: Message, state: FSMContext) -> None:
         await message.answer(f"Новое имя: {new_user_full_name}", reply_markup=edit_profile_kb)
         await state.set_state(ProfileState.waiting_for_choice)
     except Exception:
-        await message.answer(f"Не удалось сохранить новое имя 🙁",
+        await message.answer(f"Не получается сохранить новое имя 🙁",
                              reply_markup=edit_profile_kb)
         await state.set_state(ProfileState.waiting_for_choice)
 
@@ -51,5 +51,5 @@ async def edit_gender_callback_query_handler(callback_query, state: FSMContext) 
         await callback_query.message.answer(f"Пол изменен", reply_markup=edit_profile_kb)
         await state.set_state(ProfileState.waiting_for_choice)
     except Exception:
-        await callback_query.message.answer(f"Не удалось сохранить изменения 🙁", reply_markup=edit_profile_kb)
+        await callback_query.message.answer(f"У меня не получилось сохранить изменения 🙁", reply_markup=edit_profile_kb)
         await state.set_state(ProfileState.waiting_for_choice)

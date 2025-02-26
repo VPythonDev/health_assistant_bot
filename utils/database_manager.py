@@ -35,7 +35,7 @@ class Database:
         raise Exception("Database error occurred during registration check after multiple attempts")
 
     async def get_user_data(self, user_id):
-        """Get user data"""
+        """Gets user data"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -70,7 +70,7 @@ class Database:
         return False
 
     async def update_last_activity(self, user_id):
-        """Update user's last activity"""
+        """Updates user's last activity"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -82,7 +82,7 @@ class Database:
                     continue
 
     async def update_user_full_name(self, user_id, new_name):
-        """Update user full name"""
+        """Updates user full name"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -96,7 +96,7 @@ class Database:
         raise Exception(f"Database error occurred during update user full name after multiple attempts")
 
     async def update_gender(self, user_id, new_gender):
-        """Update user gender"""
+        """Updates user gender"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -137,10 +137,43 @@ class Database:
 
         raise Exception(f"Database error occurred during deanonymization after multiple attempts")
 
+    async def get_measurement_dates(self, user_id):
+        """Gets dates of blood pressure measurements"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = """SELECT DISTINCT measurement_time::DATE as dates
+FROM blood_pressure
+WHERE user_id = $1
+ORDER BY dates DESC
+"""
+                    measurement_dates = await conn.fetch(query, user_id)
+
+                    return measurement_dates
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during get measurement dates after multiple attempts")
+
+    async def get_blood_pressure_records(self, date, user_id):
+        """Get blood pressure records for day"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = "SELECT * FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"
+                    blood_pressure_records = await conn.fetch(query, date, user_id)
+
+                    return blood_pressure_records
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during get blood pressure records after multiple attempts")
+
     async def close_connections(self):
         """Close all connections"""
         if self.db_pool:
             await self.db_pool.close()
 
 
+# Database initialization
 db = Database()

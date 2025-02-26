@@ -30,7 +30,7 @@ async def anonymity_callback_query_handler(callback_query, state: FSMContext) ->
             await callback_query.message.answer("Вы зарегистрированы 😀", reply_markup=menu_kb)
             await state.set_state(MenuState.waiting_for_choice)
         else:
-            await callback_query.message.answer("Регистрация не удалась 🙁")
+            await callback_query.message.answer("Я не смог вас зарегистрировать ☹️")
             await callback_query.message.answer("Вы хотите остаться анонимным?",
                                                 reply_markup=anonymity_kb)
     elif user_anonymity_choice == "Not anonim":

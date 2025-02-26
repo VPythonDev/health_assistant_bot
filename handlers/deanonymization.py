@@ -33,5 +33,5 @@ async def deanonymization_handler(message: Message, state: FSMContext) -> None:
         await message.answer(f"Твое имя: {user_full_name}", reply_markup=edit_profile_kb)
         await state.set_state(ProfileState.waiting_for_choice)
     except Exception:
-        await message.answer(f"Не удалось обновить ваши данные 🙁", reply_markup=anonim_edit_profile_kb)
+        await message.answer(f"Мне не удалось обновить ваши данные 🙁", reply_markup=anonim_edit_profile_kb)
         await state.set_state(AnonimProfileState.waiting_for_choice)

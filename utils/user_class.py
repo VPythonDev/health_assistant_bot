@@ -6,6 +6,10 @@ class User:
         self.full_name = full_name
         self.gender = gender
 
+        # Добавляем переменные для хранения дат
+        self.measurement_dates = []  # Список уникальных дат
+        self.current_day_index = 0  # Текущий индекс в списке дат
+
         self.users[user_id] = self
 
     @classmethod

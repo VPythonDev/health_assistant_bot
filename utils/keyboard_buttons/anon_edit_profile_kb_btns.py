@@ -1,7 +1,7 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 anonim_edit_profile_buttons = [
-    KeyboardButton(text="Деанонимизация"),
+    KeyboardButton(text="Деанонимизироваться"),
     KeyboardButton(text="🔙Назад")
 ]
 

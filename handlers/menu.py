@@ -8,6 +8,8 @@ from utils.keyboard_buttons.anon_edit_profile_kb_btns import anonim_edit_profile
 from utils.keyboard_buttons.menu_kb_btns import menu_kb
 from utils.database_manager import db
 
+from utils.data_processor import process_blood_pressure_records
+
 
 @router.message(MenuState.waiting_for_choice)
 async def menu_handler(message: Message, state: FSMContext) -> None:
@@ -35,8 +37,8 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
             else:
                 message_text = f"""Профиль
 
-Ваше имя: Не указано \\(анонимный\\)
-Ваш пол: Не указано \\(анонимный\\)
+Ваше имя: Не указано (анонимный)
+Ваш пол: Не указано (анонимный)
 Количество ваших напоминаний: {reminders_number}
 Количество ваших заметок: {notes_number}"""
 
@@ -44,9 +46,29 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
                 await message.answer(message_text, reply_markup=anonim_edit_profile_kb)
         except Exception:
             await state.set_state(MenuState.waiting_for_choice)
-            await message.answer(f"Не удается получить данные профиля😢", reply_markup=menu_kb)
+            await message.answer("Мне не удалось получить данные профиля😢", reply_markup=menu_kb)
     elif user_choice == "🫀Дневник давления":
-        pass
+        try:
+            measurement_dates = await db.get_measurement_dates(user_id)
+
+            # Last day records
+            if measurement_dates:
+                # Set dates in user
+                user = User.get_user(user_id)
+                user.measurement_dates = measurement_dates
+
+                # Obj asyncpg.Record than data
+                last_day = measurement_dates[0][0]
+                blood_pressure_records = await db.get_blood_pressure_records(last_day, user_id)
+
+                message_text = await process_blood_pressure_records(blood_pressure_records)
+
+                await message.answer(message_text)
+            else:
+                await message.answer("Записей нет")
+        except Exception:
+            await state.set_state(MenuState.waiting_for_choice)
+            await message.answer(f"Я не могу получить записи🙁")
     elif user_choice == "🔔Напоминания":
         pass
     elif user_choice == "✍️Заметки":

@@ -33,7 +33,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
                 else:
                     await message.answer("Здравствуйте", reply_markup=menu_kb)
             except Exception:
-                await message.answer("Я не могу сейчас получить ваши данные. Попробуйте позже")
+                await message.answer("😵Я не могу сейчас получить ваши данные. Попробуйте позже")
         else:
             await message.answer(
                 "Привет, я бот-ассистент по здоровью. Я помогу вам следить за вашим здоровьем, пока вы "
@@ -48,4 +48,4 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
             await state.set_state(RegistrationState.waiting_for_anonymity)
             await message.answer("Вы хотите остаться анонимным?", reply_markup=anonymity_kb)
     except Exception:
-        await message.answer(f"Произошла ошибка при проверке вашей регистрации. Попробуйте позже")
+        await message.answer(f"😵Произошла ошибка при проверке вашей регистрации. Попробуйте позже")

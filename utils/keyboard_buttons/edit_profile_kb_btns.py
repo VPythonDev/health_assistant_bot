@@ -1,9 +1,9 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 edit_profile_buttons = [
-    KeyboardButton(text="Изменить имя"),
-    KeyboardButton(text="Изменить пол"),
-    KeyboardButton(text="Стать анонимным"),
+    KeyboardButton(text="Измени имя"),
+    KeyboardButton(text="Измени пол"),
+    KeyboardButton(text="Сделай анонимным"),
     KeyboardButton(text="🔙Назад")
 ]
 
