@@ -1,11 +1,20 @@
 class User:
+    users = {}
+
     def __init__(self, user_id, full_name=None, gender=None):
         self.user_id = user_id
         self.full_name = full_name
         self.gender = gender
 
+        self.users[user_id] = self
+
+    @classmethod
+    def get_user(cls, user_id):
+        """Get user form users"""
+        return cls.users.get(user_id)
+
     def translate_gender(self):
-        """Translate english gender into russian"""
+        """Translates english gender into russian"""
         gender_words = {"Male": "Мужской",
                         "Female": "Женский",
                         "Do not specify": "Не указан"}

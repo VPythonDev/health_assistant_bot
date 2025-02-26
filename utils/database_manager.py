@@ -141,3 +141,6 @@ class Database:
         """Close all connections"""
         if self.db_pool:
             await self.db_pool.close()
+
+
+db = Database()
