@@ -6,6 +6,7 @@ from utils.fsm import EditProfileState, MenuState, ProfileState
 from utils.keyboard_buttons.gender_kb_btns import gender_kb
 from utils.keyboard_buttons.menu_kb_btns import menu_kb
 from utils.my_routers import router
+from utils.user_class import User
 
 
 @router.message(ProfileState.waiting_for_choice)
@@ -22,6 +23,10 @@ async def profile_handler(message: Message, state: FSMContext) -> None:
     elif user_choice == "Сделай анонимным":
         try:
             await db.anonymization(user_id)
+
+            user = User.get_user(user_id)
+            user.full_name = None
+            user.gender = None
 
             await state.set_state(MenuState.waiting_for_choice)
             await message.answer("Теперь вы анонимны", reply_markup=menu_kb)

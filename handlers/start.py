@@ -20,7 +20,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
         is_registered = await db.check_registration(user_id)
         if is_registered:
             try:
-                full_name, gender, reminders_number, notes_number = await db.get_user_data(user_id)
+                full_name, gender, reminders_number, notes_number = await db.fetchrow_user_data(user_id)
 
                 User(user_id, full_name, gender)
 
@@ -29,7 +29,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 
                 # Greeting
                 if full_name:
-                    await message.answer(f"Здравствуйте, {full_name}!", reply_markup=menu_kb)
+                    await message.answer(f"Привет, {full_name}!", reply_markup=menu_kb)
                 else:
                     await message.answer("Здравствуйте", reply_markup=menu_kb)
             except Exception:

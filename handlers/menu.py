@@ -1,14 +1,17 @@
-from utils.my_routers import router
-from utils.fsm import MenuState, ProfileState, AnonimProfileState
-from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from utils.user_class import User
-from utils.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
-from utils.keyboard_buttons.anon_edit_profile_kb_btns import anonim_edit_profile_kb
-from utils.keyboard_buttons.menu_kb_btns import menu_kb
-from utils.database_manager import db
+from aiogram.types import Message
 
-from utils.data_processor import process_blood_pressure_records
+from utils.database_manager import db
+from utils.fsm import (AnonimProfileState, BloodPressureState, MenuState,
+                       ProfileState)
+from utils.keyboard_buttons.anon_edit_profile_kb_btns import \
+    anonim_edit_profile_kb
+from utils.keyboard_buttons.blood_pressure_kb_btns import (
+    bp_kb, generate_bp_dates_buttons)
+from utils.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
+from utils.keyboard_buttons.menu_kb_btns import menu_kb
+from utils.my_routers import router
+from utils.user_class import User
 
 
 @router.message(MenuState.waiting_for_choice)
@@ -19,7 +22,7 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
     if user_choice == "👤Профиль":
         try:
             # Get user data
-            full_name, gender, reminders_number, notes_number = await db.get_user_data(user_id)
+            full_name, gender, reminders_number, notes_number = await db.fetchrow_user_data(user_id)
 
             if full_name:
                 user = User.get_user(user_id)
@@ -45,29 +48,27 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
                 await state.set_state(AnonimProfileState.waiting_for_choice)
                 await message.answer(message_text, reply_markup=anonim_edit_profile_kb)
         except Exception:
-            await state.set_state(MenuState.waiting_for_choice)
             await message.answer("Мне не удалось получить данные профиля😢", reply_markup=menu_kb)
     elif user_choice == "🫀Дневник давления":
         try:
-            measurement_dates = await db.get_measurement_dates(user_id)
+            measurement_dates = await db.fetch_measurement_dates(user_id)
 
-            # Last day records
             if measurement_dates:
-                # Set dates in user
+                # Set dates in user and index to 0
                 user = User.get_user(user_id)
                 user.measurement_dates = measurement_dates
+                user.current_day_index = 0
 
-                # Obj asyncpg.Record than data
-                last_day = measurement_dates[0][0]
-                blood_pressure_records = await db.get_blood_pressure_records(last_day, user_id)
+                # Last day records
+                dates_kb = await generate_bp_dates_buttons(measurement_dates, 0)
 
-                message_text = await process_blood_pressure_records(blood_pressure_records)
-
-                await message.answer(message_text)
+                await message.answer("Даты:", reply_markup=dates_kb)
+                await state.set_state(BloodPressureState.waiting_for_choice)
+                await message.answer("🔝Выберите дату", reply_markup=bp_kb)
             else:
-                await message.answer("Записей нет")
+                await message.answer("Записей нет", reply_markup=bp_kb)
+                await state.set_state(BloodPressureState.waiting_for_choice)
         except Exception:
-            await state.set_state(MenuState.waiting_for_choice)
             await message.answer(f"Я не могу получить записи🙁")
     elif user_choice == "🔔Напоминания":
         pass

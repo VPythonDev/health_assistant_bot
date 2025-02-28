@@ -27,3 +27,14 @@ class AnonimProfileState(StatesGroup):
 
 class DeanonymizationState(StatesGroup):
     waiting_for_name = State()
+
+
+class BloodPressureState(StatesGroup):
+    waiting_for_choice = State()
+
+
+class CreateBPEntryState(StatesGroup):
+    waiting_for_bp = State()
+    waiting_for_pulse = State()
+    waiting_for_remark = State()
+    waiting_for_confirmation = State()

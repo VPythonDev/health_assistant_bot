@@ -32,10 +32,10 @@ class Database:
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during registration check after multiple attempts")
+        raise Exception("Database error occurred during check registration after multiple attempts")
 
-    async def get_user_data(self, user_id):
-        """Gets user data"""
+    async def fetchrow_user_data(self, user_id):
+        """Retrieves user data"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -52,7 +52,7 @@ class Database:
                 except Exception:
                     continue
 
-        raise Exception(f"Database error occurred during get user data after multiple attempts")
+        raise Exception(f"Database error occurred during fetchrow user data after multiple attempts")
 
     async def registration(self, user_id, full_name=None, gender=None):
         """Registration new user"""
@@ -137,8 +137,8 @@ class Database:
 
         raise Exception(f"Database error occurred during deanonymization after multiple attempts")
 
-    async def get_measurement_dates(self, user_id):
-        """Gets dates of blood pressure measurements"""
+    async def fetch_measurement_dates(self, user_id):
+        """Retrieves dates of blood pressure measurements"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
@@ -153,21 +153,39 @@ ORDER BY dates DESC
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during get measurement dates after multiple attempts")
+        raise Exception("Database error occurred during fetch measurement dates after multiple attempts")
 
-    async def get_blood_pressure_records(self, date, user_id):
-        """Get blood pressure records for day"""
+    async def fetch_bp_entries(self, date, user_id):
+        """Retrieves blood pressure entries for day"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
                     query = "SELECT * FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"
-                    blood_pressure_records = await conn.fetch(query, date, user_id)
+                    bp_entries = await conn.fetch(query, date, user_id)
 
-                    return blood_pressure_records
+                    return bp_entries
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during get blood pressure records after multiple attempts")
+        raise Exception("Database error occurred during fetch blood pressure entries after multiple attempts")
+
+    async def create_bp_entry(self, user_id, systolic_pressure, diastolic_pressure, pulse, remark):
+        """Creates entry in blood pressure entries"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    async with conn.transaction():
+                        query = """
+INSERT INTO blood_pressure (user_id, systolic_pressure, diastolic_pressure, pulse, remark) VALUES ($1, $2, $3, $4, $5)
+"""
+                        await conn.execute(query, user_id, systolic_pressure, diastolic_pressure, pulse, remark)
+
+                        return
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during create entry "
+                        "in blood pressure entries after multiple attempts")
 
     async def close_connections(self):
         """Close all connections"""

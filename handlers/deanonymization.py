@@ -3,7 +3,8 @@ from aiogram.types import Message
 
 from utils.database_manager import db
 from utils.fsm import AnonimProfileState, DeanonymizationState, ProfileState
-from utils.keyboard_buttons.anon_edit_profile_kb_btns import anonim_edit_profile_kb
+from utils.keyboard_buttons.anon_edit_profile_kb_btns import \
+    anonim_edit_profile_kb
 from utils.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
 from utils.my_routers import router
 from utils.user_class import User
