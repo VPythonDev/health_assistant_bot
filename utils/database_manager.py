@@ -155,19 +155,20 @@ ORDER BY dates DESC
 
         raise Exception("Database error occurred during fetch measurement dates after multiple attempts")
 
-    async def fetch_bp_entries(self, date, user_id):
+    async def fetch_bp_entries_for_day(self, date, user_id):
         """Retrieves blood pressure entries for day"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
-                    query = "SELECT * FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"
+                    query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
+FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"""
                     bp_entries = await conn.fetch(query, date, user_id)
 
                     return bp_entries
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during fetch blood pressure entries after multiple attempts")
+        raise Exception("Database error occurred during fetch blood pressure entries for day after multiple attempts")
 
     async def create_bp_entry(self, user_id, systolic_pressure, diastolic_pressure, pulse, remark):
         """Creates entry in blood pressure entries"""
@@ -186,6 +187,36 @@ INSERT INTO blood_pressure (user_id, systolic_pressure, diastolic_pressure, puls
 
         raise Exception("Database error occurred during create entry "
                         "in blood pressure entries after multiple attempts")
+
+    async def fetch_bp_entries_for_period(self, start_date, final_date, user_id):
+        """Retrieves blood pressure entries for period"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
+FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
+                    bp_entries = await conn.fetch(query, start_date, final_date, user_id)
+
+                    return bp_entries
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during fetch blood pressure entries "
+                        "for period after multiple attempts")
+
+    async def count_bp_entries(self, user_id):
+        """Counts blood pressure entries"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = "SELECT COUNT(user_id) FROM blood_pressure WHERE user_id = $1"
+                    amount = await conn.fetchrow(query, user_id)
+
+                    return amount
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during count blood pressure entries after multiple attempts")
 
     async def close_connections(self):
         """Close all connections"""

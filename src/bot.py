@@ -4,8 +4,8 @@ import os
 from aiogram import Bot, Dispatcher
 
 from handlers import (anon_profile, blood_pressure, create_bp_entry,
-                      deanonymization, edit_profile, menu, profile,
-                      registration, start)
+                      deanonymization, edit_profile, generate_bp_graph, menu,
+                      profile, registration, start)
 from utils.database_manager import db
 from utils.my_routers import router
 

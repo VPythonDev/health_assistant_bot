@@ -19,13 +19,14 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
     user_choice = message.text
     user_id = message.from_user.id
 
+    # Get user data
+    full_name, gender, reminders_number, notes_number = await db.fetchrow_user_data(user_id)
+    # User object
+    user = User.get_user(user_id)
+
     if user_choice == "👤Профиль":
         try:
-            # Get user data
-            full_name, gender, reminders_number, notes_number = await db.fetchrow_user_data(user_id)
-
             if full_name:
-                user = User.get_user(user_id)
                 gender = user.translate_gender()
 
                 message_text = f"""Профиль
@@ -55,21 +56,22 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
 
             if measurement_dates:
                 # Set dates in user and index to 0
-                user = User.get_user(user_id)
                 user.measurement_dates = measurement_dates
                 user.current_day_index = 0
 
-                # Last day records
-                dates_kb = await generate_bp_dates_buttons(measurement_dates, 0)
+                # Generate keyboard buttons of dates by bp measurement dates
+                dates_kb = generate_bp_dates_buttons(measurement_dates, 0)
 
                 await message.answer("Даты:", reply_markup=dates_kb)
                 await state.set_state(BloodPressureState.waiting_for_choice)
-                await message.answer("🔝Выберите дату", reply_markup=bp_kb)
+
+                choose_word = "Выбери" if full_name else "Выберите"
+                await message.answer(f"🔝{choose_word} дату", reply_markup=bp_kb)
             else:
                 await message.answer("Записей нет", reply_markup=bp_kb)
                 await state.set_state(BloodPressureState.waiting_for_choice)
         except Exception:
-            await message.answer(f"Я не могу получить записи🙁")
+            await message.answer("Я не могу получить записи🙁")
     elif user_choice == "🔔Напоминания":
         pass
     elif user_choice == "✍️Заметки":

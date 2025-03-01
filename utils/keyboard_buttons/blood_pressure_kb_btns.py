@@ -2,7 +2,7 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, ReplyKeyboardMarkup)
 
 
-async def generate_bp_dates_buttons(dates, start_index):
+def generate_bp_dates_buttons(dates, start_index):
     """Generates inline buttons for dates of blood pressure diary"""
     dates_inline_buttons = []
     amount_entries = 5
@@ -51,6 +51,7 @@ async def generate_bp_dates_buttons(dates, start_index):
 
 bp_buttons = [
     KeyboardButton(text="✍️Создай новую запись"),
+    KeyboardButton(text="📈Создай график"),
     KeyboardButton(text="🔙Назад")
 ]
 

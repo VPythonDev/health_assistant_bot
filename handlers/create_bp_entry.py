@@ -42,10 +42,10 @@ async def get_bp_data_message_handler(message: Message, state: FSMContext) -> No
             await message.answer(f"{you_word} ввели мало данных")
             return
 
-    is_float, num = await check_float(*user_bp)
+    is_float, num = check_float(*user_bp)
 
     if is_float:
-        user_bp_for_db = [await convert_number(user_bp[0]), await convert_number(user_bp[1])]
+        user_bp_for_db = [convert_number(user_bp[0]), convert_number(user_bp[1])]
         await state.update_data(user_bp=user_bp_for_db)
 
         may_word = "можешь" if user_full_name else "можете"
@@ -85,10 +85,10 @@ async def get_pulse_message_handler(message: Message, state: FSMContext) -> None
                 await message.answer(f"{you_word} ввели слишком много данных")
                 return
 
-        is_float, num = await check_float(user_pulse)
+        is_float, num = check_float(user_pulse)
 
         if is_float:
-            user_pulse_for_db = await convert_number(user_pulse)
+            user_pulse_for_db = convert_number(user_pulse)
             await state.update_data(user_pulse=user_pulse_for_db)
 
             await state.set_state(CreateBPEntryState.waiting_for_remark)

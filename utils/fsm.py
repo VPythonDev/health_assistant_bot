@@ -38,3 +38,8 @@ class CreateBPEntryState(StatesGroup):
     waiting_for_pulse = State()
     waiting_for_remark = State()
     waiting_for_confirmation = State()
+
+
+class GenerateBPGraph(StatesGroup):
+    waiting_for_period = State()
+    waiting_for_confirmation = State()

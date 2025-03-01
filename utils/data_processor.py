@@ -1,14 +1,17 @@
-async def get_profile(full_name, gender, reminders_number, notes_number):
+from datetime import datetime
+
+
+def get_profile(full_name, gender, reminders_number, notes_number):
     """Get profile info"""
     pass
 
 
-async def get_anon_profile():
+def get_anon_profile():
     """Get anonim profile info"""
     pass
 
 
-async def change_day_index(dates, index, is_previous=True):
+def change_day_index(dates, index, is_previous=True):
     """Check index before scrolling dates and change, if out of index in date"""
     if is_previous:
         if index + 5 <= len(dates) - 1:
@@ -22,8 +25,10 @@ async def change_day_index(dates, index, is_previous=True):
             return 0
 
 
-async def process_bp_entries(entries):
+def process_bp_entries(entries):
     """Processes blood pressure entries"""
+    format_num = lambda num: int(num) if num == int(num) else num
+
     # Date
     measurement_date_time = entries[0]["measurement_time"]
     measurement_date = measurement_date_time.strftime("%Y-%m-%d")
@@ -32,10 +37,10 @@ async def process_bp_entries(entries):
 
     for entry in entries:
         measurement_time = entry["measurement_time"].strftime("%H:%M")
-        systolic_pressure = entry["systolic_pressure"]
-        diastolic_pressure = entry["diastolic_pressure"]
+        systolic_pressure = format_num(entry["systolic_pressure"])
+        diastolic_pressure = format_num(entry["diastolic_pressure"])
 
-        pulse = entry.get("pulse") or "Не указано"
+        pulse = format_num(entry.get("pulse")) if entry.get("pulse") else "Не указано"
         remark = entry.get("remark") or "Не указано"
 
         record_text = f"""\nВремя замера - {measurement_time}
@@ -49,7 +54,7 @@ async def process_bp_entries(entries):
     return result_message
 
 
-async def check_float(*args):
+def check_float(*args):
     """checks whether the string is a number"""
     for num in args:
         replaced_num = num.replace(".", "", 1)
@@ -59,9 +64,28 @@ async def check_float(*args):
     return True, None
 
 
-async def convert_number(number_str):
+def convert_number(number_str):
     """Converts number from str to int or float"""
     if "." in number_str and number_str.index(".") < 4:
         return float(number_str[:5])
     else:
         return int(number_str[:3])
+
+
+def check_date(*args):
+    """Checks whether the string is a date"""
+    for date in args:
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+        except ValueError:
+            return False, date
+
+    return True, None
+
+
+def check_pulse(*args):
+    """Checks for pulse in blood pressure data"""
+    for data in args:
+        if data.get("pulse"):
+            return True
+    return False
