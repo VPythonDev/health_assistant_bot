@@ -156,3 +156,15 @@ def process_reminders(reminders):
 {text}\n"""
 
     return result_message
+
+
+def process_notes(notes):
+    """Create message text with notes"""
+    result_message = ""
+
+    for i, record_obj in enumerate(notes):
+        text = record_obj["note_text"]
+
+        result_message += f"\n{i + 1}) {text}\n"
+
+    return result_message

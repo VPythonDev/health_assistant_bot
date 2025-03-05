@@ -60,3 +60,16 @@ class CreateReminderState(StatesGroup):
 
 class DeleteReminderState(StatesGroup):
     waiting_for_number = State()
+
+
+class NotesState(StatesGroup):
+    waiting_for_choice = State()
+
+
+class CreateNoteState(StatesGroup):
+    waiting_for_text = State()
+
+
+class DeleteNoteState(StatesGroup):
+    waiting_for_number = State()
+    

@@ -229,8 +229,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
                         await conn.execute(query, reminder_id, reminder_type, reminder_text, parameters, user_id)
 
                         return True
-                except Exception as e:
-                    print(e)
+                except Exception:
                     continue
 
         raise Exception("Database error occurred during create reminder in reminders after multiple attempts")
@@ -249,6 +248,50 @@ FROM reminders WHERE user_id = $1"""
                     continue
 
         raise Exception("Database error occurred during fetch reminders after multiple attempts")
+
+    async def create_note(self, user_id, note_text):
+        """Creates note in notes"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    async with conn.transaction():
+                        query = "INSERT INTO notes (user_id, note_text) VALUES ($1, $2)"
+                        await conn.execute(query, user_id, note_text)
+
+                        return True
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during create note in notes after multiple attempts")
+
+    async def fetch_notes(self, user_id):
+        """Retrieves notes"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = "SELECT note_id, note_text FROM notes WHERE user_id = $1"
+                    notes = await conn.fetch(query, user_id)
+
+                    return notes
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during fetch notes after multiple attempts")
+
+    async def delete_note(self, note_id):
+        """Deletes note in notes"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = "DELETE FROM notes WHERE note_id = $1"
+                    await conn.execute(query, note_id)
+
+                    return
+                except Exception as e:
+                    print(e)
+                    continue
+
+        raise Exception("Database error occurred during delete note in notes after multiple attempts")
 
     async def close_connections(self):
         """Close all connections"""

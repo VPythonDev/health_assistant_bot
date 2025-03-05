@@ -4,8 +4,9 @@ from aiogram import Dispatcher
 
 from src.bot import bot
 from src.handlers import (anon_profile, blood_pressure, create_bp_entry,
-                          create_reminder, deanonymization, delete_reminder,
-                          edit_profile, generate_bp_graph, menu, profile,
+                          create_note, create_reminder, deanonymization,
+                          delete_note, delete_reminder, edit_profile,
+                          generate_bp_graph, menu, notes, profile,
                           registration, reminders, start)
 from src.models.database_manager import db
 from src.my_routers import router

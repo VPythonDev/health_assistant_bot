@@ -2,18 +2,19 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from src.fsm import (AnonimProfileState, BloodPressureState, MenuState,
-                     ProfileState, RemindersState)
+                     NotesState, ProfileState, RemindersState)
 from src.keyboard_buttons.anon_edit_profile_kb_btns import \
     anonim_edit_profile_kb
 from src.keyboard_buttons.blood_pressure_kb_btns import (
     bp_kb, generate_bp_dates_buttons)
 from src.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
 from src.keyboard_buttons.menu_kb_btns import menu_kb
+from src.keyboard_buttons.notes_kb_btns import notes_kb
 from src.keyboard_buttons.reminders_kb_btns import reminders_kb
 from src.models.database_manager import db
 from src.models.user_class import User
 from src.my_routers import router
-from utils.data_processor import process_reminders
+from utils.data_processor import process_notes, process_reminders
 
 
 @router.message(MenuState.waiting_for_choice)
@@ -82,8 +83,17 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
         if reminders:
             reminders_message = process_reminders(reminders)
 
-            await message.answer(f"{reminders_message}", reply_markup=reminders_kb)
+            await message.answer(reminders_message, reply_markup=reminders_kb)
         else:
             await message.answer("Напоминаний нет", reply_markup=reminders_kb)
     elif user_choice == "📓Заметки":
-        pass
+        await state.set_state(NotesState.waiting_for_choice)
+
+        notes = await db.fetch_notes(user_id)
+
+        if notes:
+            notes_message = process_notes(notes)
+
+            await message.answer(notes_message, reply_markup=notes_kb)
+        else:
+            await message.answer("Заметок нет", reply_markup=notes_kb)
