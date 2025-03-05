@@ -61,6 +61,7 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "INSERT INTO users (user_id, full_name, gender) VALUES ($1, $2, $3)"
+
                         await conn.execute(query, user_id, full_name, gender)
 
                         return True
@@ -76,7 +77,9 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "UPDATE users SET last_activity = NOW() WHERE user_id = $1"
+
                         await conn.execute(query, user_id)
+
                         return
                 except Exception:
                     continue
@@ -88,7 +91,9 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "UPDATE users SET full_name = $1 WHERE user_id = $2"
+
                         await conn.execute(query, new_name, user_id)
+
                         return
                 except Exception:
                     continue
@@ -102,7 +107,9 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "UPDATE users SET gender = $1 WHERE user_id = $2"
+
                         await conn.execute(query, new_gender, user_id)
+
                         return
                 except Exception:
                     continue
@@ -116,7 +123,9 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "UPDATE users SET full_name = NULL, gender = NULL WHERE user_id = $1"
+
                         await conn.execute(query, user_id)
+
                         return
                 except Exception:
                     continue
@@ -130,7 +139,9 @@ class Database:
                 try:
                     async with conn.transaction():
                         query = "UPDATE users SET full_name = $1, gender = 'Do not specify' WHERE user_id = $2"
+
                         await conn.execute(query, name, user_id)
+
                         return
                 except Exception:
                     continue
@@ -147,6 +158,7 @@ FROM blood_pressure
 WHERE user_id = $1
 ORDER BY dates DESC
 """
+
                     measurement_dates = await conn.fetch(query, user_id)
 
                     return measurement_dates
@@ -162,6 +174,7 @@ ORDER BY dates DESC
                 try:
                     query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
 FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"""
+
                     bp_entries = await conn.fetch(query, date, user_id)
 
                     return bp_entries
@@ -176,9 +189,9 @@ FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"""
             for attempt in range(self.attempts):
                 try:
                     async with conn.transaction():
-                        query = """
-INSERT INTO blood_pressure (user_id, systolic_pressure, diastolic_pressure, pulse, remark) VALUES ($1, $2, $3, $4, $5)
-"""
+                        query = """INSERT INTO blood_pressure 
+(user_id, systolic_pressure, diastolic_pressure, pulse, remark) VALUES ($1, $2, $3, $4, $5)"""
+
                         await conn.execute(query, user_id, systolic_pressure, diastolic_pressure, pulse, remark)
 
                         return
@@ -195,6 +208,7 @@ INSERT INTO blood_pressure (user_id, systolic_pressure, diastolic_pressure, puls
                 try:
                     query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
 FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
+
                     bp_entries = await conn.fetch(query, start_date, final_date, user_id)
 
                     return bp_entries
@@ -210,6 +224,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
             for attempt in range(self.attempts):
                 try:
                     query = "SELECT COUNT(user_id) FROM blood_pressure WHERE user_id = $1"
+
                     amount = await conn.fetchrow(query, user_id)
 
                     return amount
@@ -226,6 +241,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
                     async with conn.transaction():
                         query = """INSERT INTO reminders 
 (reminder_id, reminder_type, reminder_text, parameters, user_id) VALUES ($1, $2, $3, $4, $5)"""
+
                         await conn.execute(query, reminder_id, reminder_type, reminder_text, parameters, user_id)
 
                         return True
@@ -241,6 +257,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
                 try:
                     query = """SELECT reminder_id, reminder_type, reminder_text, parameters 
 FROM reminders WHERE user_id = $1"""
+
                     reminders = await conn.fetch(query, user_id)
 
                     return reminders
@@ -256,6 +273,7 @@ FROM reminders WHERE user_id = $1"""
                 try:
                     async with conn.transaction():
                         query = "INSERT INTO notes (user_id, note_text) VALUES ($1, $2)"
+
                         await conn.execute(query, user_id, note_text)
 
                         return True
@@ -270,6 +288,7 @@ FROM reminders WHERE user_id = $1"""
             for attempt in range(self.attempts):
                 try:
                     query = "SELECT note_id, note_text FROM notes WHERE user_id = $1"
+
                     notes = await conn.fetch(query, user_id)
 
                     return notes
@@ -283,15 +302,50 @@ FROM reminders WHERE user_id = $1"""
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
-                    query = "DELETE FROM notes WHERE note_id = $1"
-                    await conn.execute(query, note_id)
+                    async with conn.transaction():
+                        query = "DELETE FROM notes WHERE note_id = $1"
 
-                    return
-                except Exception as e:
-                    print(e)
+                        await conn.execute(query, note_id)
+
+                        return
+                except Exception:
                     continue
 
         raise Exception("Database error occurred during delete note in notes after multiple attempts")
+
+    async def update_reminders_number(self, user_id):
+        """Updates reminders number"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    async with conn.transaction():
+                        query = """UPDATE users SET reminders_number = 
+(SELECT COUNT(reminder_id) FROM reminders WHERE user_id = $1) WHERE user_id = $1"""
+
+                        await conn.execute(query, user_id)
+
+                        return
+                except Exception:
+                    continue
+
+        raise Exception(f"Database error occurred during update reminders number after multiple attempts")
+
+    async def update_notes_number(self, user_id):
+        """Updates notes number"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    async with conn.transaction():
+                        query = """UPDATE users SET notes_number = 
+(SELECT COUNT(note_id) FROM notes WHERE user_id = $1) WHERE user_id = $1"""
+
+                        await conn.execute(query, user_id)
+
+                        return
+                except Exception:
+                    continue
+
+        raise Exception(f"Database error occurred during update notes number after multiple attempts")
 
     async def close_connections(self):
         """Close all connections"""

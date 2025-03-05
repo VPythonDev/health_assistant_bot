@@ -19,7 +19,7 @@ from utils.data_processor import (convert_day_of_week, convert_months,
 
 
 @router.message(CreateReminderState.waiting_for_text)
-async def reminder_text_message_handler(message: Message, state: FSMContext):
+async def input_reminder_text_msg_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
 
     user_reminder_text = message.text
@@ -36,7 +36,7 @@ async def reminder_text_message_handler(message: Message, state: FSMContext):
 
 
 @router.callback_query(CreateReminderState.waiting_for_type)
-async def reminder_type_callback_query_handler(callback_query, state: FSMContext):
+async def input_reminder_type_cbq_handler(callback_query, state: FSMContext):
     user_id = callback_query.from_user.id
     reminder_type = callback_query.data
 
@@ -58,7 +58,7 @@ async def reminder_type_callback_query_handler(callback_query, state: FSMContext
 
 
 @router.message(CreateReminderState.waiting_for_date_time)
-async def reminder_date_time_message_handler(message: Message, state: FSMContext):
+async def create_reminder_msg_handler(message: Message, state: FSMContext):
     user_date_time = message.text.split()
 
     if len(user_date_time) < 3:
@@ -123,6 +123,9 @@ async def reminder_date_time_message_handler(message: Message, state: FSMContext
                 await state.clear()
 
                 if did_create:
+                    await db.update_reminders_number(user_id)
+                    await db.update_last_activity(user_id)
+
                     await state.set_state(MenuState.waiting_for_choice)
                     await message.answer("Я создал напоминание🙂", reply_markup=menu_kb)
                 else:
@@ -137,7 +140,7 @@ async def reminder_date_time_message_handler(message: Message, state: FSMContext
 
 
 @router.callback_query(CreateReminderState.waiting_for_mode)
-async def reminder_mode_callback_query_handler(callback_query, state: FSMContext):
+async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
     user_id = callback_query.from_user.id
     reminder_mode = callback_query.data
 
@@ -167,7 +170,7 @@ async def reminder_mode_callback_query_handler(callback_query, state: FSMContext
 
 
 @router.message(CreateReminderState.waiting_for_interval)
-async def reminder_interval_message_handler(message: Message, state: FSMContext):
+async def input_reminder_interval_msg_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
 
     user = User.get_user(user_id)
@@ -203,7 +206,7 @@ async def reminder_interval_message_handler(message: Message, state: FSMContext)
 
 
 @router.message(CreateReminderState.waiting_for_cron_schedule)
-async def reminder_cron_schedule_message_handler(message: Message, state: FSMContext):
+async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
 
     user = User.get_user(user_id)

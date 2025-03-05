@@ -8,7 +8,7 @@ from src.my_routers import router
 
 
 @router.message(DeleteNoteState.waiting_for_number)
-async def delete_note_message_handler(message: Message, state: FSMContext) -> None:
+async def delete_note_msg_handler(message: Message, state: FSMContext) -> None:
     user_message = message.text
 
     if user_message == "🚫Отмена":
@@ -26,13 +26,15 @@ async def delete_note_message_handler(message: Message, state: FSMContext) -> No
         if notes:
             index = int(user_message)
 
-            if index > len(notes):
+            if index > len(notes) or index == 0:
                 await message.answer("Такого номера нет")
                 return
 
             note_id = notes[index - 1]["note_id"]
 
             await db.delete_note(note_id)
+            await db.update_notes_number(user_id)
+            await db.update_last_activity(user_id)
 
             await message.answer("Заметка удалена", reply_markup=notes_kb)
         else:

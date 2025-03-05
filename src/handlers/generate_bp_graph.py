@@ -14,7 +14,7 @@ from utils.report_generator import (generate_bp_graph, generate_bp_report,
 
 
 @router.message(GenerateBPGraphState.waiting_for_period)
-async def get_period_message_handler(message: Message, state: FSMContext) -> None:
+async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
     user_message = message.text
 
     if user_message == "🚫Отмена":
@@ -85,7 +85,7 @@ async def get_period_message_handler(message: Message, state: FSMContext) -> Non
 
 
 @router.message(GenerateBPGraphState.waiting_for_confirmation)
-async def get_pulse_message_handler(message: Message, state: FSMContext) -> None:
+async def choose_pulse_msg_handler(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     bp_data = data.get("bp_data")
 

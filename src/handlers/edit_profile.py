@@ -9,7 +9,7 @@ from src.my_routers import router
 
 
 @router.message(EditProfileState.waiting_for_full_name)
-async def edit_full_name_handler(message: Message, state: FSMContext) -> None:
+async def edit_full_name_msg_handler(message: Message, state: FSMContext) -> None:
     new_user_full_name = message.text
 
     # Checking that user enters name less than 200 symbols
@@ -35,7 +35,7 @@ async def edit_full_name_handler(message: Message, state: FSMContext) -> None:
 
 
 @router.callback_query(EditProfileState.waiting_for_gender)
-async def edit_gender_callback_query_handler(callback_query, state: FSMContext) -> None:
+async def edit_gender_cbq_handler(callback_query, state: FSMContext) -> None:
     await callback_query.message.delete()
 
     user_id = callback_query.from_user.id

@@ -7,7 +7,7 @@ from src.my_routers import router
 
 
 @router.message(AnonimProfileState.waiting_for_choice)
-async def anon_profile_handler(message: Message, state: FSMContext) -> None:
+async def anon_profile_msg_handler(message: Message, state: FSMContext) -> None:
     user_choice = message.text
 
     if user_choice == "Деанонимизироваться":

@@ -9,7 +9,7 @@ from src.my_routers import router
 
 
 @router.message(NotesState.waiting_for_choice)
-async def notes_handler(message: Message, state: FSMContext) -> None:
+async def notes_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
     user_choice = message.text
 

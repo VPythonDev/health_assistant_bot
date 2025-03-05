@@ -11,7 +11,7 @@ from src.my_routers import router
 
 
 @router.message(DeanonymizationState.waiting_for_name)
-async def deanonymization_handler(message: Message, state: FSMContext) -> None:
+async def deanonymization_msg_handler(message: Message, state: FSMContext) -> None:
     user_full_name = message.text
 
     # Checking that user enters name less than 200 symbols

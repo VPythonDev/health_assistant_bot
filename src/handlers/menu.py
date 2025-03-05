@@ -18,7 +18,7 @@ from utils.data_processor import process_notes, process_reminders
 
 
 @router.message(MenuState.waiting_for_choice)
-async def menu_handler(message: Message, state: FSMContext) -> None:
+async def menu_msg_handler(message: Message, state: FSMContext) -> None:
     user_choice = message.text
     user_id = message.from_user.id
 

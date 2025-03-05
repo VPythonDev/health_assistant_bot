@@ -10,7 +10,7 @@ from src.my_routers import router
 
 
 @router.message(ProfileState.waiting_for_choice)
-async def profile_handler(message: Message, state: FSMContext) -> None:
+async def profile_msg_handler(message: Message, state: FSMContext) -> None:
     user_choice = message.text
     user_id = message.from_user.id
 

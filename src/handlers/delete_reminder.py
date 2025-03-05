@@ -9,7 +9,7 @@ from src.reminders.reminder import scheduler
 
 
 @router.message(DeleteReminderState.waiting_for_number)
-async def delete_reminder_message_handler(message: Message, state: FSMContext) -> None:
+async def delete_reminder_msg_handler(message: Message, state: FSMContext) -> None:
     user_message = message.text
 
     if user_message == "🚫Отмена":
@@ -27,13 +27,15 @@ async def delete_reminder_message_handler(message: Message, state: FSMContext) -
         if reminders:
             index = int(user_message)
 
-            if index > len(reminders):
+            if index > len(reminders) or index == 0:
                 await message.answer("Такого номера нет")
                 return
 
             reminder_id = reminders[index - 1]["reminder_id"]
 
             scheduler.remove_job(reminder_id)
+            await db.update_reminders_number(user_id)
+            await db.update_last_activity(user_id)
 
             await message.answer("Удалено", reply_markup=reminders_kb)
         else:

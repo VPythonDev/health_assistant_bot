@@ -16,7 +16,7 @@ from utils.data_processor import change_day_index, process_bp_entries
 
 
 @router.callback_query(BloodPressureState.waiting_for_choice)
-async def show_bp_info_callback_query_handler(callback_query) -> None:
+async def show_bp_info_cbq_handler(callback_query) -> None:
     user_id = callback_query.from_user.id
     user_choice = callback_query.data
 
@@ -59,7 +59,7 @@ async def show_bp_info_callback_query_handler(callback_query) -> None:
 
 
 @router.message(BloodPressureState.waiting_for_choice)
-async def bp_message_handler(message: Message, state: FSMContext) -> None:
+async def bp_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
     user_choice = message.text
 

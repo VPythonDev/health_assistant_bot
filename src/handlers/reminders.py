@@ -10,7 +10,7 @@ from src.my_routers import router
 
 
 @router.message(RemindersState.waiting_for_choice)
-async def reminders_message_handler(message: Message, state: FSMContext) -> None:
+async def reminders_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
     user_choice = message.text
 

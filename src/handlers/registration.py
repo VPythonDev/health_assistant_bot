@@ -13,7 +13,7 @@ from src.my_routers import router
 
 
 @router.callback_query(RegistrationState.waiting_for_anonymity)
-async def anonymity_callback_query_handler(callback_query, state: FSMContext) -> None:
+async def choose_anonymity_cbq_handler(callback_query, state: FSMContext) -> None:
     user_id = callback_query.from_user.id
 
     # Create user
@@ -44,7 +44,7 @@ async def anonymity_callback_query_handler(callback_query, state: FSMContext) ->
 
 
 @router.message(RegistrationState.waiting_for_full_name)
-async def full_name_handler(message: Message, state: FSMContext) -> None:
+async def input_full_name_msg_handler(message: Message, state: FSMContext) -> None:
     user_full_name = message.text
 
     # Checking that user enters name less than 200 symbols
@@ -65,7 +65,7 @@ async def full_name_handler(message: Message, state: FSMContext) -> None:
 
 
 @router.callback_query(RegistrationState.waiting_for_gender)
-async def gender_callback_query_handler(callback_query, state: FSMContext) -> None:
+async def choose_gender_cbq_handler(callback_query, state: FSMContext) -> None:
     user_id = callback_query.from_user.id
     user_gender = callback_query.data
 
@@ -95,6 +95,6 @@ async def gender_callback_query_handler(callback_query, state: FSMContext) -> No
 
 
 @router.message(RegistrationState.waiting_for_gender)
-async def gender_message_handler(message: Message) -> None:
+async def repeat_choose_gender_msg_handler(message: Message) -> None:
     await message.answer("Вы не выбрали пол. Под этим сообщением находятся кнопки для выбора пола. Пожалуйста "
                          "выберите пол, нажав на одну из кнопок", reply_markup=gender_kb)

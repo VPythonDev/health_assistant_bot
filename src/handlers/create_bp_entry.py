@@ -12,7 +12,7 @@ from utils.data_processor import convert_number, validate_numeric_string
 
 
 @router.message(CreateBPEntryState.waiting_for_bp)
-async def get_bp_data_message_handler(message: Message, state: FSMContext) -> None:
+async def input_bp_data_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
 
     user = User.get_user(user_id)
@@ -56,7 +56,7 @@ async def get_bp_data_message_handler(message: Message, state: FSMContext) -> No
 
 
 @router.message(CreateBPEntryState.waiting_for_pulse)
-async def get_pulse_message_handler(message: Message, state: FSMContext) -> None:
+async def input_pulse_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
 
     user = User.get_user(user_id)
@@ -99,7 +99,7 @@ async def get_pulse_message_handler(message: Message, state: FSMContext) -> None
 
 
 @router.message(CreateBPEntryState.waiting_for_remark)
-async def get_remark_message_handler(message: Message, state: FSMContext) -> None:
+async def input_remark_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
 
     user = User.get_user(user_id)
@@ -134,7 +134,7 @@ async def get_remark_message_handler(message: Message, state: FSMContext) -> Non
 
 
 @router.message(CreateBPEntryState.waiting_for_confirmation)
-async def bp_confirmation_message_handler(message: Message, state: FSMContext) -> None:
+async def bp_create_confirmation_msg_handler(message: Message, state: FSMContext) -> None:
     user_id = message.from_user.id
     user_confirm = message.text
 
@@ -153,6 +153,7 @@ async def bp_confirmation_message_handler(message: Message, state: FSMContext) -
             remark = bp_data.get("user_remark")
 
             await db.create_bp_entry(user_id, systolic_pressure, diastolic_pressure, pulse, remark)
+            await db.update_last_activity(user_id)
 
             await state.clear()
 
