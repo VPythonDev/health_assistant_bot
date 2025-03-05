@@ -1,17 +1,19 @@
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from utils.database_manager import db
-from utils.fsm import (AnonimProfileState, BloodPressureState, MenuState,
-                       ProfileState)
-from utils.keyboard_buttons.anon_edit_profile_kb_btns import \
+from src.fsm import (AnonimProfileState, BloodPressureState, MenuState,
+                     ProfileState, RemindersState)
+from src.keyboard_buttons.anon_edit_profile_kb_btns import \
     anonim_edit_profile_kb
-from utils.keyboard_buttons.blood_pressure_kb_btns import (
+from src.keyboard_buttons.blood_pressure_kb_btns import (
     bp_kb, generate_bp_dates_buttons)
-from utils.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
-from utils.keyboard_buttons.menu_kb_btns import menu_kb
-from utils.my_routers import router
-from utils.user_class import User
+from src.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
+from src.keyboard_buttons.menu_kb_btns import menu_kb
+from src.keyboard_buttons.reminders_kb_btns import reminders_kb
+from src.models.database_manager import db
+from src.models.user_class import User
+from src.my_routers import router
+from utils.data_processor import process_reminders
 
 
 @router.message(MenuState.waiting_for_choice)
@@ -73,6 +75,15 @@ async def menu_handler(message: Message, state: FSMContext) -> None:
         except Exception:
             await message.answer("Я не могу получить записи🙁")
     elif user_choice == "🔔Напоминания":
-        pass
-    elif user_choice == "✍️Заметки":
+        await state.set_state(RemindersState.waiting_for_choice)
+
+        reminders = await db.fetch_reminders(user_id)
+
+        if reminders:
+            reminders_message = process_reminders(reminders)
+
+            await message.answer(f"{reminders_message}", reply_markup=reminders_kb)
+        else:
+            await message.answer("Напоминаний нет", reply_markup=reminders_kb)
+    elif user_choice == "📓Заметки":
         pass

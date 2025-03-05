@@ -40,6 +40,23 @@ class CreateBPEntryState(StatesGroup):
     waiting_for_confirmation = State()
 
 
-class GenerateBPGraph(StatesGroup):
+class GenerateBPGraphState(StatesGroup):
     waiting_for_period = State()
     waiting_for_confirmation = State()
+
+
+class RemindersState(StatesGroup):
+    waiting_for_choice = State()
+
+
+class CreateReminderState(StatesGroup):
+    waiting_for_text = State()
+    waiting_for_type = State()
+    waiting_for_mode = State()
+    waiting_for_interval = State()
+    waiting_for_cron_schedule = State()
+    waiting_for_date_time = State()
+
+
+class DeleteReminderState(StatesGroup):
+    waiting_for_number = State()

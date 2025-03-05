@@ -218,6 +218,38 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
 
         raise Exception("Database error occurred during count blood pressure entries after multiple attempts")
 
+    async def create_reminder(self, reminder_id, reminder_type, reminder_text, parameters, user_id):
+        """Creates reminder in reminders"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    async with conn.transaction():
+                        query = """INSERT INTO reminders 
+(reminder_id, reminder_type, reminder_text, parameters, user_id) VALUES ($1, $2, $3, $4, $5)"""
+                        await conn.execute(query, reminder_id, reminder_type, reminder_text, parameters, user_id)
+
+                        return True
+                except Exception as e:
+                    print(e)
+                    continue
+
+        raise Exception("Database error occurred during create reminder in reminders after multiple attempts")
+
+    async def fetch_reminders(self, user_id):
+        """Retrieves reminders"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = """SELECT reminder_id, reminder_type, reminder_text, parameters 
+FROM reminders WHERE user_id = $1"""
+                    reminders = await conn.fetch(query, user_id)
+
+                    return reminders
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during fetch reminders after multiple attempts")
+
     async def close_connections(self):
         """Close all connections"""
         if self.db_pool:

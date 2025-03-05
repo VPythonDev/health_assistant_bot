@@ -1,11 +1,11 @@
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from utils.database_manager import db
-from utils.fsm import EditProfileState, ProfileState
-from utils.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
-from utils.my_routers import router
-from utils.user_class import User
+from src.fsm import EditProfileState, ProfileState
+from src.keyboard_buttons.edit_profile_kb_btns import edit_profile_kb
+from src.models.database_manager import db
+from src.models.user_class import User
+from src.my_routers import router
 
 
 @router.message(EditProfileState.waiting_for_full_name)

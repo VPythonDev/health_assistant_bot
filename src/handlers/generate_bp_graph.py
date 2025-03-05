@@ -3,17 +3,17 @@ from datetime import datetime, timedelta
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, Message
 
-from utils.data_processor import check_date, check_pulse
-from utils.database_manager import db
-from utils.fsm import BloodPressureState, GenerateBPGraph
-from utils.keyboard_buttons.blood_pressure_kb_btns import bp_kb
-from utils.keyboard_buttons.confirm_kb_btns import confirm_kb
-from utils.my_routers import router
+from src.fsm import BloodPressureState, GenerateBPGraphState
+from src.keyboard_buttons.blood_pressure_kb_btns import bp_kb
+from src.keyboard_buttons.confirm_kb_btns import confirm_kb
+from src.models.database_manager import db
+from src.my_routers import router
+from utils.data_processor import check_pulse, validate_datetime_format
 from utils.report_generator import (generate_bp_graph, generate_bp_report,
                                     generate_pulse_graph)
 
 
-@router.message(GenerateBPGraph.waiting_for_period)
+@router.message(GenerateBPGraphState.waiting_for_period)
 async def get_period_message_handler(message: Message, state: FSMContext) -> None:
     user_message = message.text
 
@@ -36,7 +36,7 @@ async def get_period_message_handler(message: Message, state: FSMContext) -> Non
 За период: 2025-01-01 2025-12-31""")
         return
     if user_period_len == 2:
-        is_date, date = check_date(user_period[0], user_period[1])
+        is_date, date = validate_datetime_format(user_period[0], user_period[1])
 
         if not is_date:
             await message.answer(f"Это не подходящая дата - {date}")
@@ -46,7 +46,7 @@ async def get_period_message_handler(message: Message, state: FSMContext) -> Non
             final_date = datetime.strptime(user_period[1], "%Y-%m-%d")
 
     if user_period_len == 1:
-        is_date, date = check_date(user_period[0])
+        is_date, date = validate_datetime_format(user_period[0])
 
         if not is_date:
             await message.answer(f"Это не подходящая дата - {date}")
@@ -63,7 +63,7 @@ async def get_period_message_handler(message: Message, state: FSMContext) -> Non
 
         if have_pulse:
             await state.update_data(bp_data=bp_data)
-            await state.set_state(GenerateBPGraph.waiting_for_confirmation)
+            await state.set_state(GenerateBPGraphState.waiting_for_confirmation)
             await message.answer("Нужно ли учитывать пульс?", reply_markup=confirm_kb)
         else:
             bp_graph_stream = generate_bp_graph(bp_data)
@@ -84,7 +84,7 @@ async def get_period_message_handler(message: Message, state: FSMContext) -> Non
         await message.answer(f"Нет записей в период с {start_date_str} до {final_date_str}")
 
 
-@router.message(GenerateBPGraph.waiting_for_confirmation)
+@router.message(GenerateBPGraphState.waiting_for_confirmation)
 async def get_pulse_message_handler(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     bp_data = data.get("bp_data")

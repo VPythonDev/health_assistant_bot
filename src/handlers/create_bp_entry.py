@@ -1,14 +1,14 @@
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from utils.data_processor import check_float, convert_number
-from utils.database_manager import db
-from utils.fsm import BloodPressureState, CreateBPEntryState
-from utils.keyboard_buttons.blood_pressure_kb_btns import bp_kb
-from utils.keyboard_buttons.confirm_kb_btns import confirm_kb
-from utils.keyboard_buttons.leave_empty_kb_btns import leave_empty_kb
-from utils.my_routers import router
-from utils.user_class import User
+from src.fsm import BloodPressureState, CreateBPEntryState
+from src.keyboard_buttons.blood_pressure_kb_btns import bp_kb
+from src.keyboard_buttons.confirm_kb_btns import confirm_kb
+from src.keyboard_buttons.leave_empty_kb_btns import leave_empty_kb
+from src.models.database_manager import db
+from src.models.user_class import User
+from src.my_routers import router
+from utils.data_processor import convert_number, validate_numeric_string
 
 
 @router.message(CreateBPEntryState.waiting_for_bp)
@@ -42,7 +42,7 @@ async def get_bp_data_message_handler(message: Message, state: FSMContext) -> No
             await message.answer(f"{you_word} ввели мало данных")
             return
 
-    is_float, num = check_float(*user_bp)
+    is_float, num = validate_numeric_string(*user_bp)
 
     if is_float:
         user_bp_for_db = [convert_number(user_bp[0]), convert_number(user_bp[1])]
@@ -85,7 +85,7 @@ async def get_pulse_message_handler(message: Message, state: FSMContext) -> None
                 await message.answer(f"{you_word} ввели слишком много данных")
                 return
 
-        is_float, num = check_float(user_pulse)
+        is_float, num = validate_numeric_string(user_pulse)
 
         if is_float:
             user_pulse_for_db = convert_number(user_pulse)

@@ -1,9 +1,9 @@
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from utils.fsm import AnonimProfileState, DeanonymizationState, MenuState
-from utils.keyboard_buttons.menu_kb_btns import menu_kb
-from utils.my_routers import router
+from src.fsm import AnonimProfileState, DeanonymizationState, MenuState
+from src.keyboard_buttons.menu_kb_btns import menu_kb
+from src.my_routers import router
 
 
 @router.message(AnonimProfileState.waiting_for_choice)

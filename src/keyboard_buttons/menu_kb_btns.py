@@ -4,7 +4,7 @@ menu_buttons = [
     KeyboardButton(text="👤Профиль"),
     KeyboardButton(text="🫀Дневник давления"),
     KeyboardButton(text="🔔Напоминания"),
-    KeyboardButton(text="✍️Заметки")
+    KeyboardButton(text="📓Заметки")
 ]
 
 menu_kb = ReplyKeyboardMarkup(

@@ -3,16 +3,16 @@ from datetime import datetime
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from utils.data_processor import change_day_index, process_bp_entries
-from utils.database_manager import db
-from utils.fsm import (BloodPressureState, CreateBPEntryState, GenerateBPGraph,
-                       MenuState)
-from utils.keyboard_buttons.blood_pressure_kb_btns import (
+from src.fsm import (BloodPressureState, CreateBPEntryState,
+                     GenerateBPGraphState, MenuState)
+from src.keyboard_buttons.blood_pressure_kb_btns import (
     bp_kb, generate_bp_dates_buttons)
-from utils.keyboard_buttons.cancel_kb_btns import cancel_kb
-from utils.keyboard_buttons.menu_kb_btns import menu_kb
-from utils.my_routers import router
-from utils.user_class import User
+from src.keyboard_buttons.cancel_kb_btns import cancel_kb
+from src.keyboard_buttons.menu_kb_btns import menu_kb
+from src.models.database_manager import db
+from src.models.user_class import User
+from src.my_routers import router
+from utils.data_processor import change_day_index, process_bp_entries
 
 
 @router.callback_query(BloodPressureState.waiting_for_choice)
@@ -76,7 +76,7 @@ async def bp_message_handler(message: Message, state: FSMContext) -> None:
         if bool(bp_entries_amount):
             specify_word = "Укажи" if user_full_name else "Укажите"
 
-            await state.set_state(GenerateBPGraph.waiting_for_period)
+            await state.set_state(GenerateBPGraphState.waiting_for_period)
             await message.answer(f"""{specify_word} за какой период мне создать график
 За один день: 2025-01-01
 За период: 2025-01-01 2025-12-31""", reply_markup=cancel_kb)
