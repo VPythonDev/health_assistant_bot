@@ -19,8 +19,6 @@ async def delete_reminder_msg_handler(message: Message, state: FSMContext) -> No
     elif not user_message.isdigit():
         await message.answer("Это не номер")
     else:
-        await state.set_state(RemindersState.waiting_for_choice)
-
         user_id = message.from_user.id
         reminders = await db.fetch_reminders(user_id)
 
@@ -37,6 +35,8 @@ async def delete_reminder_msg_handler(message: Message, state: FSMContext) -> No
             await db.update_reminders_number(user_id)
             await db.update_last_activity(user_id)
 
+            await state.set_state(RemindersState.waiting_for_choice)
             await message.answer("Удалено", reply_markup=reminders_kb)
         else:
+            await state.set_state(RemindersState.waiting_for_choice)
             await message.answer("Напоминаний нет", reply_markup=reminders_kb)

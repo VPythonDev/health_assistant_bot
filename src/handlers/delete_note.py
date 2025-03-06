@@ -18,8 +18,6 @@ async def delete_note_msg_handler(message: Message, state: FSMContext) -> None:
     elif not user_message.isdigit():
         await message.answer("Это не номер")
     else:
-        await state.set_state(NotesState.waiting_for_choice)
-
         user_id = message.from_user.id
         notes = await db.fetch_notes(user_id)
 
@@ -36,6 +34,8 @@ async def delete_note_msg_handler(message: Message, state: FSMContext) -> None:
             await db.update_notes_number(user_id)
             await db.update_last_activity(user_id)
 
+            await state.set_state(NotesState.waiting_for_choice)
             await message.answer("Заметка удалена", reply_markup=notes_kb)
         else:
+            await state.set_state(NotesState.waiting_for_choice)
             await message.answer("Заметок нет", reply_markup=notes_kb)
