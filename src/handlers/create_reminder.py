@@ -153,8 +153,12 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
         await state.set_state(CreateReminderState.waiting_for_interval)
 
         write_word = "Напиши" if user_full_name else "Напишите"
-        await callback_query.message.edit_text(f"{write_word} интервал мин(секунды), "
-                                               f"макс.(секунды минуты часы дни недели)")
+        cant_word = "Ты не можешь" if user_full_name else "Вы не можете"
+
+        await callback_query.message.edit_text(f"""{write_word} интервал
+Формат - секунды, минуты, часы, дни, недели
+Пример - 0 10 (каждые 10 минут)
+Обязательно в таком порядке. {cant_word} написать сначала минуты потом секунды""")
     elif reminder_mode == "Cron":
         await state.update_data(trigger="cron")
 
@@ -163,9 +167,10 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
         may_word = f"{user_full_name} можешь" if user_full_name else "Вы можете"
         await callback_query.message.edit_text(f"""{may_word} написать конкретные числа или периоды.
 Конкретные числа: 1,2,5 10,12,31
-Периоды: 0-12, 5-10
-Чтобы указать дни недели, их нужно перечислить словами - понедельник,вторник и тд.
-Формат - минуты, часы, дни недели, дени месяца, месяцы
+Периоды: 0-12 5-10
+Чтобы указать дни недели, их можно перечислить словами - понедельник,вторник и тд.
+Формат - минуты, часы, дни недели, дни месяца, месяцы (порядок не важен)
+Пример - дни недели понедельник-среда,суббота часы 9,12,15 (с понедельника по среду и в субботу в 9, 12 и 15 часов)
 Не забудьте про пробелы🙂""")
 
 
@@ -179,7 +184,7 @@ async def input_reminder_interval_msg_handler(message: Message, state: FSMContex
     user_interval = message.text.split()
 
     if len(user_interval) > 5:
-        await message.answer("Слишком много данных. Максимум 5 значений (недели дни часы минуты секунды)")
+        await message.answer("Слишком много данных. Максимум 5 значений (секунды, минуты, часы, дни, недели)")
         return
 
     intervals_dict = {"seconds": 0, "minutes": 0, "hours": 0, "days": 0, "weeks": 0}
@@ -197,7 +202,7 @@ async def input_reminder_interval_msg_handler(message: Message, state: FSMContex
             return
 
     await state.update_data(**intervals_dict)
-    await state.update_data(parameters=" ".join(user_interval))
+    await state.update_data(parameters="(сек. мин. час. дн. нед.) - " + " ".join(user_interval))
 
     write_word = "Напиши" if user_full_name else "Напишите"
 
@@ -220,7 +225,7 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
 
     schedule_dict = {"minute": None, "hour": None, "day_of_week": None, "day": None, "month": None}
 
-    for i, time_unit in enumerate(["минуты", "часы", "недели", "месяца", "месяцы"]):
+    for i, time_unit in enumerate(["минуты", "часы", "недели", "дни месяца", "месяцы"]):
         if time_unit in user_schedule:
             index = user_schedule.index(time_unit)
 
@@ -253,6 +258,10 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
             else:
                 await message.answer(f"Это значение не подходит - {time_values}")
                 return
+
+    if all(value is None for value in schedule_dict.values()):
+        await message.answer("Неверный формат. Можно указать - минуты, часы, недели, дни месяца, месяцы")
+        return
 
     await state.update_data(**schedule_dict)
     await state.update_data(parameters=" ".join(user_schedule))
