@@ -165,7 +165,7 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
 
         await state.set_state(CreateReminderState.waiting_for_cron_schedule)
 
-        may_word = f"{user_full_name} можешь" if user_full_name else "Вы можете"
+        may_word = f"{user_full_name}, ты можешь" if user_full_name else "Вы можете"
         await callback_query.message.edit_text(f"""{may_word} написать конкретные числа или периоды.
 Конкретные числа: 1,2,5 10,12,31
 Периоды: 0-12 5-10
