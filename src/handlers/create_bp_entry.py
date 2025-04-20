@@ -109,7 +109,8 @@ async def input_remark_msg_handler(message: Message, state: FSMContext) -> None:
     user_remark = message.text
 
     if len(user_remark) > 300:
-        await message.answer("Слишком много. Нужно не больше 300 символов")
+        await message.answer(f"Слишком длинный текст (символов - {len(user_remark)}). "
+                             f"Я могу принять не больше 300 символов")
         return
 
     user_remark_for_db = user_remark if user_remark != "Оставь пустым" else None
