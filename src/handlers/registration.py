@@ -96,5 +96,5 @@ async def choose_gender_cbq_handler(callback_query, state: FSMContext) -> None:
 
 @router.message(RegistrationState.waiting_for_gender)
 async def repeat_choose_gender_msg_handler(message: Message) -> None:
-    await message.answer("Вы не выбрали пол. Под этим сообщением находятся кнопки для выбора пола. Пожалуйста "
+    await message.answer("Вы не выбрали пол. Под этим сообщением находятся кнопки. Пожалуйста, "
                          "выберите пол, нажав на одну из кнопок", reply_markup=gender_kb)
