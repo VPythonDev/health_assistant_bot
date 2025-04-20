@@ -2,7 +2,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from src.fsm import CreateNoteState, NotesState
-from src.keyboard_buttons.notes_kb_btns import notes_kb
 from src.models.database_manager import db
 from src.models.user_class import User
 from src.my_routers import router
@@ -25,6 +24,6 @@ async def create_note_msg_handler(message: Message, state: FSMContext) -> None:
 
         user_addressing = f"{user_full_name}, я" if user_full_name else "Я"
 
-        await message.answer(f"{user_addressing} создал заметку🙂", reply_markup=notes_kb)
+        await message.answer(f"{user_addressing} создал заметку🙂")
     else:
         await message.answer("У меня не получилось создать заметку🙁")

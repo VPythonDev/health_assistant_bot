@@ -280,7 +280,7 @@ FROM reminders WHERE user_id = $1"""
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during create note in notes after multiple attempts")
+        return False
 
     async def fetch_notes(self, user_id):
         """Retrieves notes"""
