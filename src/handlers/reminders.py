@@ -17,12 +17,12 @@ async def reminders_msg_handler(message: Message, state: FSMContext) -> None:
     user = User.get_user(user_id)
     user_full_name = user.full_name
 
-    if user_choice == "Создай напоминание":
+    if user_choice == "❗️Создай напоминание":
         you_word = "тебе" if user_full_name else "вам"
 
         await state.set_state(CreateReminderState.waiting_for_text)
         await message.answer(f"Что {you_word} напомнить? (не больше 300 символов)")
-    elif user_choice == "Удали напоминание":
+    elif user_choice == "🗑Удали напоминание":
         write_word = "Напиши" if user_full_name else "Напишите"
 
         await state.set_state(DeleteReminderState.waiting_for_number)

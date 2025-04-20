@@ -1,8 +1,8 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 reminders_buttons = [
-    KeyboardButton(text="Создай напоминание"),
-    KeyboardButton(text="Удали напоминание"),
+    KeyboardButton(text="❗️Создай напоминание"),
+    KeyboardButton(text="🗑Удали напоминание"),
     KeyboardButton(text="🔙Назад")
 ]
 

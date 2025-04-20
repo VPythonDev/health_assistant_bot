@@ -1,8 +1,8 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 notes_buttons = [
-    KeyboardButton(text="Создай заметку"),
-    KeyboardButton(text="Удали заметку"),
+    KeyboardButton(text="📝Создай заметку"),
+    KeyboardButton(text="🗑Удали заметку"),
     KeyboardButton(text="🔙Назад")
 ]
 
