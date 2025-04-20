@@ -258,7 +258,7 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
                 return
 
     if all(value is None for value in schedule_dict.values()):
-        await message.answer("Неверный формат. Можно указать - минуты, часы, недели, дни месяца, месяцы")
+        await message.answer("Неверный формат. Можно указать - минуты, часы, дни недели, дни месяца, месяцы")
         return
 
     await state.update_data(**schedule_dict)
