@@ -226,7 +226,7 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
 
     schedule_dict = {"minute": None, "hour": None, "day_of_week": None, "day": None, "month": None}
 
-    for i, time_unit in enumerate(["минуты", "часы", "недели", "дни месяца", "месяцы"]):
+    for i, time_unit in enumerate(["минуты", "часы", "недели", "месяца", "месяцы"]):
         if time_unit in user_schedule:
             index = user_schedule.index(time_unit)
 
@@ -237,8 +237,6 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
             if replaced_time_values.isdigit():
                 key = list(schedule_dict.keys())[i]
                 schedule_dict[key] = time_values
-
-                continue
             elif replaced_time_values.isalpha():
                 time_values_list = time_values.replace("-", " ").replace(",", " ").split()
 
@@ -249,7 +247,6 @@ async def input_reminder_cron_schedule_msg_handler(message: Message, state: FSMC
 
                     if converted_day_of_week:
                         list_for_replace[0] = list_for_replace[0].replace(day_of_week, converted_day_of_week)
-                        continue
                     else:
                         await message.answer(f"Это не подходящий день недели - {day_of_week}")
                         return
