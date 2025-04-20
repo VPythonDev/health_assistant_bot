@@ -31,7 +31,7 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
     user_period_len = len(user_period)
 
     if user_period_len > 2:
-        await message.answer("""Неверный формат. Повторяю
+        await message.answer("""Неверный формат. Вот образцы для примера
 За один день: 2025-01-01
 За период: 2025-01-01 2025-12-31""")
         return
