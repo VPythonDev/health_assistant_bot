@@ -24,7 +24,7 @@ async def bp_msg_handler(message: Message, state: FSMContext) -> None:
     user_full_name = user.full_name
 
     if user_choice == "✍️Создай новую запись":
-        enter_word = "Введи" if user_full_name else "Введите"
+        enter_word = f"{user_full_name}, введи" if user_full_name else "Введите"
 
         await state.set_state(CreateBPEntryState.waiting_for_bp)
         await message.answer(f"""
