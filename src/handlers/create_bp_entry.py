@@ -62,8 +62,11 @@ async def input_pulse_msg_handler(message: Message, state: FSMContext) -> None:
     user = User.get_user(user_id)
     user_full_name = user.full_name
 
-    you_word = "ты" if user_full_name else "вы"
+    you_word = "Ты" if user_full_name else "Вы"
     want_word = "хочешь" if user_full_name else "хотите"
+
+    reply_text = (f"может {you_word.lower()} {want_word} оставить замечания (например, свое самочувствие)? "
+                  f"Не более 300 символов")
 
     user_pulse = message.text
 
@@ -71,8 +74,7 @@ async def input_pulse_msg_handler(message: Message, state: FSMContext) -> None:
         await state.update_data(user_pulse=None)
 
         await state.set_state(CreateBPEntryState.waiting_for_remark)
-        await message.answer(f"""Хорошо, может {you_word} {want_word} оставить замечания 
-(например, свое самочувствие)? Не более 300 символов""", reply_markup=leave_empty_kb)
+        await message.answer(f"Хорошо, {reply_text}", reply_markup=leave_empty_kb)
     else:
         if len(user_pulse.split()) > 1:
             user_gender = user.gender
@@ -92,8 +94,7 @@ async def input_pulse_msg_handler(message: Message, state: FSMContext) -> None:
             await state.update_data(user_pulse=user_pulse_for_db)
 
             await state.set_state(CreateBPEntryState.waiting_for_remark)
-            await message.answer(f"""Записал, может {you_word} {want_word} оставить замечания 
-(например, свое самочувствие)? Не более 300 символов""", reply_markup=leave_empty_kb)
+            await message.answer(f"Записал, {reply_text}", reply_markup=leave_empty_kb)
         else:
             await message.answer(f"Неверный формат - {num}")
 
