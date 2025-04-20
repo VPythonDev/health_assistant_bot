@@ -16,7 +16,7 @@ async def profile_msg_handler(message: Message, state: FSMContext) -> None:
 
     if user_choice == "Измени имя":
         await state.set_state(EditProfileState.waiting_for_full_name)
-        await message.answer("Введите новое имя (не больше 200 символов)")
+        await message.answer("Введи новое имя (не больше 200 символов)")
     elif user_choice == "Измени пол":
         await state.set_state(EditProfileState.waiting_for_gender)
         await message.answer("Выбери пол:", reply_markup=gender_kb)
