@@ -50,7 +50,8 @@ async def input_bp_data_msg_handler(message: Message, state: FSMContext) -> None
 
         may_word = "можешь" if user_full_name else "можете"
         await state.set_state(CreateBPEntryState.waiting_for_pulse)
-        await message.answer(f"Теперь {may_word} указать пульс или оставить его пустым", reply_markup=leave_empty_kb)
+        await message.answer(f"Теперь {may_word} указать частоту пульса (количество ударов в минуту, уд/мин) "
+                             f"или оставить его пустым", reply_markup=leave_empty_kb)
     else:
         await message.answer(f"Неверный формат - {num}")
 

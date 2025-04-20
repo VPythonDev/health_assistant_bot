@@ -27,9 +27,8 @@ async def bp_msg_handler(message: Message, state: FSMContext) -> None:
         enter_word = f"{user_full_name}, введи" if user_full_name else "Введите"
 
         await state.set_state(CreateBPEntryState.waiting_for_bp)
-        await message.answer(f"""
-{enter_word} значения давления в миллиметрах ртутного столба (мм рт. ст.) в формате: 120 80 (с пробелом, а не '-')
-""")
+        await message.answer(f"{enter_word} значения артериального давления в миллиметрах ртутного столба (мм рт. ст.) "
+                             f"в формате: 120 80 (с пробелом, а не '-')")
     elif user_choice == "📈Создай график":
         # Records obj, not int
         bp_entries_amount = await db.count_bp_entries(user_id)
