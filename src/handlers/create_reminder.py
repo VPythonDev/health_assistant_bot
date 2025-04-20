@@ -110,6 +110,7 @@ async def create_reminder_msg_handler(message: Message, state: FSMContext):
                 reminder_data["month"] = data.get("month")
 
                 reminder_data["start_date"] = parsed_date_time
+
             try:
                 scheduler.add_job(**reminder_data)
             except Exception:
@@ -127,7 +128,7 @@ async def create_reminder_msg_handler(message: Message, state: FSMContext):
                     await db.update_last_activity(user_id)
 
                     await state.set_state(MenuState.waiting_for_choice)
-                    await message.answer("Я создал напоминание🙂", reply_markup=menu_kb)
+                    await message.answer("Я создал напоминание😀", reply_markup=menu_kb)
                 else:
                     scheduler.remove_job(id=reminder_id)
                     await state.set_state(RemindersState.waiting_for_choice)

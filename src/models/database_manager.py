@@ -248,7 +248,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
                 except Exception:
                     continue
 
-        raise Exception("Database error occurred during create reminder in reminders after multiple attempts")
+        return False
 
     async def fetch_reminders(self, user_id):
         """Retrieves reminders"""
