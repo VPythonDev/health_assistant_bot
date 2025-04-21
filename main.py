@@ -25,6 +25,7 @@ async def start_bot():
         scheduler.start()
         await db.init_pool()
         await bot.delete_webhook(True)
+        print("Hello world")
         await dispatcher.start_polling(bot)
     finally:
         await db.close_connections()

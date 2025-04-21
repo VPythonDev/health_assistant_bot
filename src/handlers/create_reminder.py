@@ -130,7 +130,13 @@ async def create_reminder_msg_handler(message: Message, state: FSMContext):
                     await state.set_state(MenuState.waiting_for_choice)
                     await message.answer("Я создал напоминание😀", reply_markup=menu_kb)
                 else:
-                    scheduler.remove_job(id=reminder_id)
+                    try:
+                        # There is a bug with trigger date
+                        # If user input passed date, it will be an error that id doesn't exist
+                        scheduler.remove_job(id=reminder_id)
+                    except Exception:
+                        pass
+
                     await state.set_state(RemindersState.waiting_for_choice)
 
                     await message.answer("Я не смог создать напоминание🙁", reply_markup=reminders_kb)
