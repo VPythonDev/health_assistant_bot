@@ -31,7 +31,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
                 if full_name:
                     await message.answer(f"Привет, {full_name}! Рад снова тебя видеть!", reply_markup=menu_kb)
                 else:
-                    await message.answer("Здравствуйте", reply_markup=menu_kb)
+                    await message.answer("Здравствуйте, рад снова вас видеть!", reply_markup=menu_kb)
             except Exception:
                 await message.answer("😵Я не могу сейчас получить ваши данные. Попробуйте позже")
         else:

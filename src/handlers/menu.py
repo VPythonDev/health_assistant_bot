@@ -32,22 +32,22 @@ async def menu_msg_handler(message: Message, state: FSMContext) -> None:
             if full_name:
                 gender = user.translate_gender()
 
-                message_text = f"""Профиль
+                message_text = f"""Твой профиль
 
-Твое имя: {full_name}
-Твой пол: {gender}
-Количество твоих напоминаний: {reminders_number}
-Количество твоих заметок: {notes_number}"""
+Имя: {full_name}
+Пол: {gender}
+Количество напоминаний: {reminders_number}
+Количество заметок: {notes_number}"""
 
                 await state.set_state(ProfileState.waiting_for_choice)
                 await message.answer(message_text, reply_markup=edit_profile_kb)
             else:
-                message_text = f"""Профиль
+                message_text = f"""Ваш профиль
 
-Ваше имя: Не указано (анонимный)
-Ваш пол: Не указано (анонимный)
-Количество ваших напоминаний: {reminders_number}
-Количество ваших заметок: {notes_number}"""
+Имя: Не указано (анонимный)
+Пол: Не указано (анонимный)
+Количество напоминаний: {reminders_number}
+Количество заметок: {notes_number}"""
 
                 await state.set_state(AnonimProfileState.waiting_for_choice)
                 await message.answer(message_text, reply_markup=anonim_edit_profile_kb)
