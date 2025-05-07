@@ -87,4 +87,4 @@ async def show_bp_info_cbq_handler(callback_query) -> None:
 
             await callback_query.message.answer(message_text, reply_markup=bp_kb)
         except Exception:
-            await callback_query.message.answer("Я не могу получить ваши записи за эту дату🙁", reply_markup=bp_kb)
+            await callback_query.message.answer("Я не могу получить записи за эту дату🙁", reply_markup=bp_kb)

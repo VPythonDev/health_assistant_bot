@@ -35,7 +35,7 @@ async def delete_note_msg_handler(message: Message, state: FSMContext) -> None:
             await db.update_last_activity(user_id)
 
             await state.set_state(NotesState.waiting_for_choice)
-            await message.answer("Заметка удалена", reply_markup=notes_kb)
+            await message.answer("Я удалил заметку", reply_markup=notes_kb)
         else:
             await state.set_state(NotesState.waiting_for_choice)
             await message.answer("Заметок нет", reply_markup=notes_kb)

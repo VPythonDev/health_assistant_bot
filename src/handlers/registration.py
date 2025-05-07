@@ -37,9 +37,8 @@ async def choose_anonymity_cbq_handler(callback_query, state: FSMContext) -> Non
         await callback_query.message.delete()
 
         # Pause between messages
-        await asyncio.sleep(1)
-        await callback_query.message.answer("Чтобы я знал, как к вам обращаться, напишите ваше имя. Это может быть "
-                                            "псевдоним, ФИО или все, что вам угодно, но не длиннее 200 символов")
+        await asyncio.sleep(0.5)
+        await callback_query.message.answer("В таком случае, как я могу к вам обращаться?")
         await state.set_state(RegistrationState.waiting_for_full_name)
 
 
@@ -49,8 +48,8 @@ async def input_full_name_msg_handler(message: Message, state: FSMContext) -> No
 
     # Checking that user enters name less than 200 symbols
     if len(user_full_name) > 200:
-        await message.answer("Имя не может быть больше 200 символов. Пожалуйста, введите имя, чтобы я знал, "
-                             "как к вам обращаться")
+        await message.answer("К сожалению, я не могу запомнить имя больше 200 символов. "
+                             "Пожалуйста, введите имя, чтобы я знал, как к вам обращаться")
         return
 
     user_id = message.from_user.id
@@ -90,7 +89,7 @@ async def choose_gender_cbq_handler(callback_query, state: FSMContext) -> None:
         await state.set_state(MenuState.waiting_for_choice)
 
     else:
-        await callback_query.message.answer("К сожалению сейчас я не могу вас зарегистрировать 🙁")
+        await callback_query.message.answer("К сожалению, сейчас я не могу вас зарегистрировать 🙁")
         await state.clear()
 
 

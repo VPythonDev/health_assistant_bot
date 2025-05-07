@@ -161,7 +161,7 @@ async def bp_create_confirmation_msg_handler(message: Message, state: FSMContext
             await state.clear()
 
             await state.set_state(BloodPressureState.waiting_for_choice)
-            await message.answer("Запись успешно создана 😃", reply_markup=bp_kb)
+            await message.answer("Я записал данные 😃", reply_markup=bp_kb)
         except Exception:
             await state.set_state(BloodPressureState.waiting_for_choice)
 

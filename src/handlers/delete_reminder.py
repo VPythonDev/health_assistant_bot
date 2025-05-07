@@ -36,7 +36,7 @@ async def delete_reminder_msg_handler(message: Message, state: FSMContext) -> No
             await db.update_last_activity(user_id)
 
             await state.set_state(RemindersState.waiting_for_choice)
-            await message.answer("Удалено", reply_markup=reminders_kb)
+            await message.answer("Я удалил напоминание", reply_markup=reminders_kb)
         else:
             await state.set_state(RemindersState.waiting_for_choice)
             await message.answer("Напоминаний нет", reply_markup=reminders_kb)

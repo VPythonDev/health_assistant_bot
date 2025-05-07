@@ -29,14 +29,14 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 
                 # Greeting
                 if full_name:
-                    await message.answer(f"Привет, {full_name}!", reply_markup=menu_kb)
+                    await message.answer(f"Привет, {full_name}! Рад снова тебя видеть!", reply_markup=menu_kb)
                 else:
                     await message.answer("Здравствуйте", reply_markup=menu_kb)
             except Exception:
                 await message.answer("😵Я не могу сейчас получить ваши данные. Попробуйте позже")
         else:
             await message.answer("""
-Привет, я бот-ассистент по здоровью. Я помогу вам следить за здоровьем, пока вы занимаетесь своими делами.
+Привет, я бот-ассистент по здоровью. Я помогу вам следить за здоровьем.
 
 В мои возможности входят:
 📕 Ведение дневника давления
@@ -45,11 +45,11 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 """)
             # Pause between messages
             await asyncio.sleep(5)
-            await message.answer("Вижу вы здесь в первый раз. Вам необходимо зарегистрироваться для того, чтобы я "
-                                 "стал вашим персональным ассистентом. Если вы хотите зарегестрироваться, ответьте на "
-                                 "вопрос")
+            await message.answer("Вижу, вы здесь в первый раз. Если хотите, "
+                                 "чтобы я стал вашим персональным ассистентом, мне необходимо вас зарегистрировать. "
+                                 "Пожалуйста, ответьте на вопрос и я проведу регистрацию")
 
             await state.set_state(RegistrationState.waiting_for_anonymity)
             await message.answer("Вы хотите остаться анонимным?", reply_markup=anonymity_kb)
     except Exception:
-        await message.answer(f"😵Произошла ошибка при проверке вашей регистрации. Попробуйте позже")
+        await message.answer("😵Произошла ошибка при проверке вашей регистрации. Попробуйте позже")

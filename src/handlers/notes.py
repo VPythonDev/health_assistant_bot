@@ -20,7 +20,7 @@ async def notes_msg_handler(message: Message, state: FSMContext) -> None:
         may_word = "Можешь" if user_full_name else "Можете"
 
         await state.set_state(CreateNoteState.waiting_for_text)
-        await message.answer(f"Текст должен быть не больше 2000 символов. {may_word} писать")
+        await message.answer(f"{may_word} писать, но я могу сохранить не более 2000 символов")
     elif user_choice == "🗑Удали заметку":
         write_word = "Напиши" if user_full_name else "Напишите"
 
