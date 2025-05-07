@@ -159,11 +159,11 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
 
         await state.set_state(CreateReminderState.waiting_for_interval)
 
-        write_word = "Напиши" if user_full_name else "Напишите"
+        write_word = "Укажи" if user_full_name else "Укажите"
         cant_word = "Ты не можешь" if user_full_name else "Вы не можете"
 
         await callback_query.message.edit_text(f"""{write_word} интервал
-Формат - секунды, минуты, часы, дни, недели
+Формат - [секунды] [минуты] [часы] [дни] [недели]
 Пример - 0 10 (каждые 10 минут)
 Обязательно в таком порядке. {cant_word} написать сначала минуты потом секунды""")
     elif reminder_mode == "Cron":
@@ -172,17 +172,30 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
         await state.set_state(CreateReminderState.waiting_for_cron_schedule)
 
         may_word = f"{user_full_name}, ты можешь" if user_full_name else "Вы можете"
+
         await callback_query.message.edit_text(f"""{may_word} написать конкретные числа или периоды.
 Конкретные числа: 1,2,5 10,12,31
 Периоды: 0-12 5-10
 Дни недели можно указать словами - понедельник,вторник и т.д.
 
-Формат: минуты, часы, дни недели, дни месяца, месяцы (порядок не важен)
-⚠️Между названиями секций (например, *часы*, *дни недели*) - обязательно ставьте пробел.
+Формат:
+минуты [значение]
+часы [значение]
+дни недели [значение]
+дни месяца [значение]
+месяцы [значение]
+(порядок не важен)
+
+⚠️Между названиями секций (например, *часы*, *дни недели*) обязательно должен быть пробел.
 Значения внутри секции (например, *9,12,15*) пишутся без пробелов.
 
-Пример:
-дни недели понедельник-среда,суббота часы 9,12,15 (с понедельника по среду и в субботу в 9, 12 и 15 часов)""")
+Примеры:
+дни недели понедельник-среда,суббота
+часы 9,12,15
+(с понедельника по среду и в субботу в 9, 12 и 15 часов)
+
+минуты 0-30,35 месяцы 1-12
+(с января по декабрь с 0 по 30 и в 35 минут)""")
 
 
 @router.message(CreateReminderState.waiting_for_interval)
