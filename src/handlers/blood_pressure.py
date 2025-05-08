@@ -37,7 +37,9 @@ async def bp_msg_handler(message: Message, state: FSMContext) -> None:
             specify_word = "Укажи" if user_full_name else "Укажите"
 
             await state.set_state(GenerateBPGraphState.waiting_for_period)
-            await message.answer(f"""{specify_word} за какой период мне создать график
+            await message.answer(f"""{specify_word} за какой период мне создать график?
+Ниже примеры форматов ввода
+
 За один день: 2025-01-01
 За период: 2025-01-01 2025-12-31""", reply_markup=cancel_kb)
         else:
