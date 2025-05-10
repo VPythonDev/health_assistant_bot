@@ -45,6 +45,11 @@ class GenerateBPGraphState(StatesGroup):
     waiting_for_confirmation = State()
 
 
+class BloodPressureAnalysisState(StatesGroup):
+    waiting_for_type = State()
+    waiting_for_period = State()
+
+
 class RemindersState(StatesGroup):
     waiting_for_choice = State()
 

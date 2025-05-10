@@ -52,6 +52,7 @@ def generate_bp_dates_buttons(dates, start_index):
 bp_buttons = [
     KeyboardButton(text="✍️Создай новую запись"),
     KeyboardButton(text="📈Создай график"),
+    KeyboardButton(text="🩺Проведи анализ"),
     KeyboardButton(text="🔙Назад")
 ]
 

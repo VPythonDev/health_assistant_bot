@@ -3,8 +3,9 @@ from datetime import datetime
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from src.fsm import (BloodPressureState, CreateBPEntryState,
-                     GenerateBPGraphState, MenuState)
+from src.fsm import (BloodPressureAnalysisState, BloodPressureState,
+                     CreateBPEntryState, GenerateBPGraphState, MenuState)
+from src.keyboard_buttons.blood_pressure_analyze_kb_btns import bp_analysis_kb
 from src.keyboard_buttons.blood_pressure_kb_btns import (
     bp_kb, generate_bp_dates_buttons)
 from src.keyboard_buttons.cancel_kb_btns import cancel_kb
@@ -44,6 +45,9 @@ async def bp_msg_handler(message: Message, state: FSMContext) -> None:
 За период: 2025-01-01 2025-12-31""", reply_markup=cancel_kb)
         else:
             await message.answer("Чтобы я мог сделать график, нужно создать запись")
+    elif user_choice == "🩺Проведи анализ":
+        await state.set_state(BloodPressureAnalysisState.waiting_for_type)
+        await message.answer("Какой анализ мне провести?", reply_markup=bp_analysis_kb)
     elif user_choice == "🔙Назад":
         await state.set_state(MenuState.waiting_for_choice)
         await message.answer("Чем могу быть полезен?", reply_markup=menu_kb)

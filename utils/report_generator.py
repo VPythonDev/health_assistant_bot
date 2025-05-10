@@ -18,11 +18,18 @@ def generate_bp_graph(data):
     for record_obj in data:
         systolic_pressure = record_obj["systolic_pressure"]
         diastolic_pressure = record_obj["diastolic_pressure"]
-        date_time = record_obj["measurement_time"].strftime("%Y-%m-%d %H:%M")
+        date_time = record_obj["measurement_time"].strftime("%Y-%m-%d\n%H:%M")
 
         systolic_pressure_data.append(systolic_pressure)
         diastolic_pressure_data.append(diastolic_pressure)
         dates.append(date_time)
+
+    # Вычисляем ширину графика в зависимости от количества точек
+    n_points = len(dates)
+    width = min(max(24 * n_points / 14, 10), 60)  # минимум 10, максимум 60 дюймов ширина
+    height = 6  # фиксированная высота
+
+    plt.figure(figsize=(width, height))  # создаём график нужного размера
 
     # Generate graph
     plt.plot(
@@ -64,10 +71,17 @@ def generate_pulse_graph(data):
         pulse = record_obj.get("pulse")
 
         if pulse:
-            date_time = record_obj["measurement_time"].strftime("%Y-%m-%d %H:%M")
+            date_time = record_obj["measurement_time"].strftime("%Y-%m-%d\n%H:%M")
 
             pulses.append(pulse)
             dates.append(date_time)
+
+    # Вычисляем ширину графика в зависимости от количества точек
+    n_points = len(dates)
+    width = min(max(24 * n_points / 14, 10), 60)  # минимум 10, максимум 60 дюймов ширина
+    height = 6  # фиксированная высота
+
+    plt.figure(figsize=(width, height))  # создаём график нужного размера
 
     # Generate graph
     plt.plot(dates, pulses, label="Пульс", color="blue", marker="o", linestyle="-")

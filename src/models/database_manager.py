@@ -207,7 +207,7 @@ FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"""
             for attempt in range(self.attempts):
                 try:
                     query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
-FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
+FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3 ORDER BY measurement_time DESC"""
 
                     bp_entries = await conn.fetch(query, start_date, final_date, user_id)
 
@@ -232,6 +232,22 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3"""
                     continue
 
         raise Exception("Database error occurred during count blood pressure entries after multiple attempts")
+
+    async def fetch_last_10_bp_entries(self, user_id):
+        """Retrieves last 10 blood pressure entries"""
+        async with self.db_pool.acquire() as conn:
+            for attempt in range(self.attempts):
+                try:
+                    query = """SELECT systolic_pressure, diastolic_pressure, pulse, measurement_time 
+FROM blood_pressure WHERE user_id = $1 ORDER BY measurement_time DESC LIMIT 10"""
+
+                    bp_last_10 = await conn.fetch(query, user_id)
+
+                    return bp_last_10
+                except Exception:
+                    continue
+
+        raise Exception("Database error occurred during fetch last 10 blood pressure entries after multiple attempts")
 
     async def create_reminder(self, reminder_id, reminder_type, reminder_text, parameters, user_id):
         """Creates reminder in reminders"""

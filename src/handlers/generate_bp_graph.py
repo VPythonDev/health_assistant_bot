@@ -33,7 +33,8 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
     if user_period_len > 2:
         await message.answer("""Неверный формат. Вот образцы для примера
 За один день: 2025-01-01
-За период: 2025-01-01 2025-12-31""")
+За период: 2025-01-01 2025-12-31
+(с 2025-01-01 до 2025-12-31, то есть по 30)""")
         return
     if user_period_len == 2:
         is_date, date = validate_datetime_format(user_period[0], user_period[1])
