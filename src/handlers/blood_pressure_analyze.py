@@ -30,12 +30,16 @@ async def choose_bp_type_analysis_msg_handler(message: Message, state: FSMContex
         bp_last_10 = await db.fetch_last_10_bp_entries(user_id)
 
         if bp_last_10:
-            await message.answer("""⚠️ВАЖНО:
-Я не могу заменить консультацию квалифицированного врача.
-Для точной диагностики и получения рекомендаций по лечению всегда обращайтесь к медицинскому специалисту.
+            contact_word = "обращайся" if user_full_name else "обращайтесь"
+            consult_word = "проконсультируйся" if user_full_name else "проконсультируйтесь"
+            forget_word = "Не забывай" if user_full_name else "Не забывайте"
 
-Если возникли проблемы с давлением или другие симптомы, немедленно проконсультируйтесь с врачом. 
-Не забывайте, что правильное лечение требует профессионального подхода!""")
+            await message.answer(f"""⚠️ВАЖНО:
+Я не могу заменить консультацию квалифицированного врача.
+Для точной диагностики и получения рекомендаций по лечению всегда {contact_word} к медицинскому специалисту.
+
+Если возникли проблемы с давлением или другие симптомы, немедленно {consult_word} с врачом. 
+{forget_word}, что правильное лечение требует профессионального подхода!""")
             # Pause between messages
             await asyncio.sleep(1)
 
@@ -79,7 +83,7 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
 
     if user_period_len > 2 or user_period_len < 2:
         await message.answer("""Неверный формат. Вот пример:
-2025-01-01 2025-12-31
+2025-01-01 2025-12-31 (две даты)
 (с 2025-01-01 до 2025-12-31, то есть по 30)""")
         return
 
@@ -97,12 +101,19 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
     bp_data = await db.fetch_bp_entries_for_period(start_date, final_date, user_id)
 
     if bp_data:
-        await message.answer("""⚠️ВАЖНО:
-Я не могу заменить консультацию квалифицированного врача.
-Для точной диагностики и получения рекомендаций по лечению всегда обращайтесь к медицинскому специалисту.
+        user = User.get_user(user_id)
+        user_full_name = user.full_name
 
-Если возникли проблемы с давлением или другие симптомы, немедленно проконсультируйтесь с врачом. 
-Не забывайте, что правильное лечение требует профессионального подхода!""")
+        contact_word = "обращайся" if user_full_name else "обращайтесь"
+        consult_word = "проконсультируйся" if user_full_name else "проконсультируйтесь"
+        forget_word = "Не забывай" if user_full_name else "Не забывайте"
+
+        await message.answer(f"""⚠️ВАЖНО:
+Я не могу заменить консультацию квалифицированного врача.
+Для точной диагностики и получения рекомендаций по лечению всегда {contact_word} к медицинскому специалисту.
+
+Если возникли проблемы с давлением или другие симптомы, немедленно {consult_word} с врачом.
+{forget_word}, что правильное лечение требует профессионального подхода!""")
         # Pause between messages
         await asyncio.sleep(1)
 

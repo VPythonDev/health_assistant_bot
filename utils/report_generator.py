@@ -182,7 +182,7 @@ def generate_bp_report(data, bp_pdf_buffer, pulse_pdf_buffer=None):
 
     doc = SimpleDocTemplate(table_pdf_buffer, pagesize=A4,
                             rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
-    doc.build([Paragraph("Таблица измерения<br/><br/>", style), table])
+    doc.build([Paragraph("Таблица измерений артериального давления<br/><br/>", style), table])
 
     # Чтение таблицы из буфера
     table_pdf_buffer.seek(0)

@@ -207,7 +207,7 @@ FROM blood_pressure WHERE measurement_time::DATE = $1 AND user_id = $2"""
             for attempt in range(self.attempts):
                 try:
                     query = """SELECT systolic_pressure, diastolic_pressure, pulse, remark, measurement_time 
-FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3 ORDER BY measurement_time DESC"""
+FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3 ORDER BY measurement_time ASC"""
 
                     bp_entries = await conn.fetch(query, start_date, final_date, user_id)
 
@@ -239,7 +239,7 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3 OR
             for attempt in range(self.attempts):
                 try:
                     query = """SELECT systolic_pressure, diastolic_pressure, pulse, measurement_time 
-FROM blood_pressure WHERE user_id = $1 ORDER BY measurement_time DESC LIMIT 10"""
+FROM blood_pressure WHERE user_id = $1 ORDER BY measurement_time ASC LIMIT 10"""
 
                     bp_last_10 = await conn.fetch(query, user_id)
 

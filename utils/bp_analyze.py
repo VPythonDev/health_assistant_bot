@@ -96,7 +96,7 @@ def get_pulse_category(pulse):
 
 def analyze_bp(entries):
     """Analyze blood pressure according to records"""
-    last_measurement_time = entries[0]["measurement_time"].strftime("%Y-%m-%d %H:%M")
+    last_measurement_time = entries[-1]["measurement_time"].strftime("%Y-%m-%d %H:%M")
     systolic_values = []
     diastolic_values = []
 
@@ -195,8 +195,7 @@ def analyze_pulse(entries):
         if pulse:
             pulse_values.append(pulse)
 
-            if not last_measurement_time:
-                last_measurement_time = entry["measurement_time"].strftime("%Y-%m-%d %H:%M")
+            last_measurement_time = entry["measurement_time"].strftime("%Y-%m-%d %H:%M")
 
     if pulse_values:
         # Average value
@@ -224,10 +223,10 @@ def analyze_pulse(entries):
         health_advice = recommendations.get(pulse_category, "Я не могу оценить и дать рекомендации.")
 
         result = f"""💗Анализ пульса
-    
+
 Всего записей: {len(pulse_values)}
 Дата и время последнего замера: {last_measurement_time or "Не могу определить"}
-    
+
 Средний пульс: {avg_pulse} уд/мин
 Категория пульса: {pulse_category}
 
