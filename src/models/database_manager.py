@@ -238,8 +238,9 @@ FROM blood_pressure WHERE measurement_time BETWEEN $1 AND $2 AND user_id = $3 OR
         async with self.db_pool.acquire() as conn:
             for attempt in range(self.attempts):
                 try:
-                    query = """SELECT systolic_pressure, diastolic_pressure, pulse, measurement_time 
-FROM blood_pressure WHERE user_id = $1 ORDER BY measurement_time ASC LIMIT 10"""
+                    query = """SELECT systolic_pressure, diastolic_pressure, pulse, measurement_time FROM (
+SELECT systolic_pressure, diastolic_pressure, pulse, measurement_time 
+FROM blood_pressure WHERE user_id = $1 ORDER BY measurement_time DESC LIMIT 10) sub ORDER BY measurement_time ASC"""
 
                     bp_last_10 = await conn.fetch(query, user_id)
 
