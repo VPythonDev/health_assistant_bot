@@ -112,6 +112,7 @@ async def create_reminder_msg_handler(message: Message, state: FSMContext):
                 reminder_data["start_date"] = parsed_date_time
 
             try:
+                print(reminder_data)
                 scheduler.add_job(**reminder_data)
             except Exception:
                 await state.clear()
@@ -160,12 +161,14 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
         await state.set_state(CreateReminderState.waiting_for_interval)
 
         write_word = "Укажи" if user_full_name else "Укажите"
-        cant_word = "Ты не можешь" if user_full_name else "Вы не можете"
 
         await callback_query.message.edit_text(f"""{write_word} интервал
-Формат - [секунды] [минуты] [часы] [дни] [недели]
-Пример - 0 10 (каждые 10 минут)
-Обязательно в таком порядке. {cant_word} написать сначала минуты потом секунды""")
+
+Единицы времени: секунда, минута, час, день, неделя
+
+Пример: 1 час 2 дня 30 минут (сработает через 2 дня, 1 час и 30 минут)
+
+Главное - чтобы числовое значение было перед единицей времени""")
     elif reminder_mode == "Cron":
         await state.update_data(trigger="cron")
 
@@ -184,7 +187,6 @@ async def input_reminder_mode_cbq_handler(callback_query, state: FSMContext):
 дни недели [значение]
 дни месяца [значение]
 месяцы [значение]
-(порядок не важен)
 
 ⚠️Между названиями секций (например, *часы*, *дни недели*) обязательно должен быть пробел.
 Значения внутри секции (например, *9,12,15*) пишутся без пробелов.
@@ -205,28 +207,43 @@ async def input_reminder_interval_msg_handler(message: Message, state: FSMContex
     user = User.get_user(user_id)
     user_full_name = user.full_name
 
-    user_interval = message.text.split()
-
-    if len(user_interval) > 5:
-        await message.answer("Слишком много данных. Максимум 5 значений (секунды, минуты, часы, дни, недели)")
-        return
+    user_interval = message.text.lower()
 
     intervals_dict = {"seconds": 0, "minutes": 0, "hours": 0, "days": 0, "weeks": 0}
-    # Check is digit and change value in intervals dict
-    for i, num in enumerate(user_interval):
-        if num.isdigit():
-            num_int = int(num)
+    time_units = {"сек": "seconds", "мин": "minutes", "час": "hours", "дн": "days", "день": "days", "нед": "weeks"}
 
-            key = list(intervals_dict.keys())[i]
-            intervals_dict[key] = num_int
-        else:
-            repeat_word = "Повтори" if user_full_name else "Повторите"
+    for rus_time_unit, time_unit in time_units.items():
+        rus_time_unit_index = user_interval.find(rus_time_unit)
 
-            await message.answer(f"Это не положительное целое число - {num}. {repeat_word} еще раз")
-            return
+        if rus_time_unit_index != -1:
+            subinterval = user_interval[:rus_time_unit_index].split()
+
+            if not subinterval:
+                write_word = "Укажи" if user_full_name else "Укажите"
+
+                await message.answer(f"{write_word} значение в виде числа перед "
+                                     f"'{user_interval[rus_time_unit_index:]}', а не после")
+                return
+
+            time_value = subinterval[-1]
+
+            if time_value.isdigit():
+                intervals_dict[time_unit] = int(time_value)
+            else:
+                repeat_word = "Повтори" if user_full_name else "Повторите"
+
+                await message.answer(f"Это не целое положительное число - {time_value}. {repeat_word} еще раз")
+                return
+
+    if all(value == 0 for value in intervals_dict.values()):
+        reply_text = """Параметры указаны неверно.
+Интервал можно задать в секундах, минутах, часах, днях или неделях"""
+
+        await message.answer(reply_text)
+        return
 
     await state.update_data(**intervals_dict)
-    await state.update_data(parameters="(сек. мин. час. дн. нед.) - " + " ".join(user_interval))
+    await state.update_data(parameters=message.text)
 
     write_word = "Напиши" if user_full_name else "Напишите"
 

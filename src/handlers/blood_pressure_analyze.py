@@ -31,14 +31,12 @@ async def choose_bp_type_analysis_msg_handler(message: Message, state: FSMContex
 
         if bp_last_10:
             contact_word = "обращайся" if user_full_name else "обращайтесь"
-            consult_word = "проконсультируйся" if user_full_name else "проконсультируйтесь"
             forget_word = "Не забывай" if user_full_name else "Не забывайте"
 
             await message.answer(f"""⚠️ВАЖНО:
 Я не могу заменить консультацию квалифицированного врача.
 Для точной диагностики и получения рекомендаций по лечению всегда {contact_word} к медицинскому специалисту.
 
-Если возникли проблемы с давлением или другие симптомы, немедленно {consult_word} с врачом. 
 {forget_word}, что правильное лечение требует профессионального подхода!""")
             # Pause between messages
             await asyncio.sleep(1)
@@ -105,14 +103,12 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
         user_full_name = user.full_name
 
         contact_word = "обращайся" if user_full_name else "обращайтесь"
-        consult_word = "проконсультируйся" if user_full_name else "проконсультируйтесь"
         forget_word = "Не забывай" if user_full_name else "Не забывайте"
 
         await message.answer(f"""⚠️ВАЖНО:
 Я не могу заменить консультацию квалифицированного врача.
 Для точной диагностики и получения рекомендаций по лечению всегда {contact_word} к медицинскому специалисту.
 
-Если возникли проблемы с давлением или другие симптомы, немедленно {consult_word} с врачом.
 {forget_word}, что правильное лечение требует профессионального подхода!""")
         # Pause between messages
         await asyncio.sleep(1)
