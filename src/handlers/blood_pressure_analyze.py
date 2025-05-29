@@ -115,8 +115,8 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
         # Pause between messages
         await asyncio.sleep(1)
 
-        bp_analysis = analyze_bp(bp_data)
-        pulse_analysis = analyze_pulse(bp_data)
+        bp_analysis = analyze_bp(bp_data, is_advanced=True)
+        pulse_analysis = analyze_pulse(bp_data, is_advanced=True)
 
         await state.set_state(BloodPressureState.waiting_for_choice)
         await message.answer(bp_analysis, reply_markup=bp_kb)
