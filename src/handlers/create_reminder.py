@@ -112,7 +112,6 @@ async def create_reminder_msg_handler(message: Message, state: FSMContext):
                 reminder_data["start_date"] = parsed_date_time
 
             try:
-                print(reminder_data)
                 scheduler.add_job(**reminder_data)
             except Exception:
                 await state.clear()

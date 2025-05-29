@@ -43,22 +43,20 @@ def generate_bp_dates_buttons(dates, start_index):
     else:
         for record_obj in dates:
             measurement_date = str(record_obj[0])
-            dates_inline_buttons.append(InlineKeyboardButton(text=measurement_date, callback_data=measurement_date))
+            dates_inline_buttons.append([InlineKeyboardButton(text=measurement_date, callback_data=measurement_date)])
 
-        dates_inline_kb = InlineKeyboardMarkup(inline_keyboard=[dates_inline_buttons])
+        dates_inline_kb = InlineKeyboardMarkup(inline_keyboard=dates_inline_buttons)
         return dates_inline_kb
 
 
 bp_buttons = [
-    KeyboardButton(text="✍️Создай новую запись"),
-    KeyboardButton(text="📈Создай график"),
-    KeyboardButton(text="🩺Проведи анализ"),
-    KeyboardButton(text="🔙Назад")
+    [KeyboardButton(text="✍️Создай новую запись")],
+    [KeyboardButton(text="📈Создай график"), KeyboardButton(text="🩺Проведи анализ")],
+    [KeyboardButton(text="🔙Назад")]
 ]
 
 bp_kb = ReplyKeyboardMarkup(
-    keyboard=[bp_buttons],
-    is_persistent=True,
+    keyboard=bp_buttons,
     resize_keyboard=True,
     one_time_keyboard=True
 )

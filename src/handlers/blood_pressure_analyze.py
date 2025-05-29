@@ -50,8 +50,10 @@ async def choose_bp_type_analysis_msg_handler(message: Message, state: FSMContex
                 await message.answer(pulse_analysis)
 
         else:
-            you_word = f"тебя, {user_full_name}," if user_full_name else "вас"
-            await message.answer(f"Я не могу провести анализ по скольку у {you_word} все еще нет записей о давлении",
+            await state.set_state(BloodPressureState.waiting_for_choice)
+
+            you_word = f"тебя" if user_full_name else "вас"
+            await message.answer(f"Я не могу провести анализ, поскольку у {you_word} все еще нет записей о давлении",
                                  reply_markup=bp_kb)
 
     elif user_choice == "Расширенный":

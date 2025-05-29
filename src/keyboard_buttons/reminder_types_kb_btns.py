@@ -8,8 +8,8 @@ reminder_types_buttons = [
 reminder_types_kb = InlineKeyboardMarkup(inline_keyboard=[reminder_types_buttons])
 
 repeat_modes_buttons = [
-    InlineKeyboardButton(text="Интервал", callback_data="Interval"),
-    InlineKeyboardButton(text="Конкретное время", callback_data="Cron")
+    [InlineKeyboardButton(text="Интервал", callback_data="Interval")],
+    [InlineKeyboardButton(text="Конкретное время", callback_data="Cron")]
 ]
 
-repeat_modes_kb = InlineKeyboardMarkup(inline_keyboard=[repeat_modes_buttons])
+repeat_modes_kb = InlineKeyboardMarkup(inline_keyboard=repeat_modes_buttons)

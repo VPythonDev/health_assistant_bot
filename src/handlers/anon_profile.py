@@ -10,7 +10,7 @@ from src.my_routers import router
 async def anon_profile_msg_handler(message: Message, state: FSMContext) -> None:
     user_choice = message.text
 
-    if user_choice == "Деанонимизироваться":
+    if user_choice == "Раскрыть профиль":
         await state.set_state(DeanonymizationState.waiting_for_name)
 
         await message.answer("Введите имя, чтобы я знал, как к вам обращаться")
