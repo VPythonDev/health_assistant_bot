@@ -24,7 +24,7 @@ async def choose_bp_type_analysis_msg_handler(message: Message, state: FSMContex
 
     if user_choice == "🚫Отмена":
         await state.set_state(BloodPressureState.waiting_for_choice)
-        await message.answer("Анализ прерван", reply_markup=bp_kb)
+        await message.answer("Анализ отменен", reply_markup=bp_kb)
 
     elif user_choice == "Быстрый":
         bp_last_10 = await db.fetch_last_10_bp_entries(user_id)
@@ -70,7 +70,7 @@ async def input_period_msg_handler(message: Message, state: FSMContext) -> None:
 
     if user_message == "🚫Отмена":
         await state.set_state(BloodPressureState.waiting_for_choice)
-        await message.answer("Анализ прерван", reply_markup=bp_kb)
+        await message.answer("Анализ отменен", reply_markup=bp_kb)
         return
 
     user_id = message.from_user.id
